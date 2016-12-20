@@ -9,11 +9,9 @@ function(sc, http, loc, rs, r) {
         rs.socket.emit('chat_send', {user: rs.user, message: sc.message, roomId: rs.room});
     }
     rs.socket.on('update_chat', function(data){
-        sc.$apply(function(){
-            sc.chatbox += '\n' + data.user + ': ' + data.message;
-            sc.message = "";
-        })
-        //r.reload();
+        sc.chatbox += data.user + ': ' + data.message + '\n';
+        sc.message = "";
+        sc.$apply()
     });
 
 }]);
