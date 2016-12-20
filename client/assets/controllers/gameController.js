@@ -30,9 +30,13 @@ function(sc, http, loc, rs, r) {
   });
 
   sc.start = function(){
-        console.log('game start');
-        rs.socket.emit('start_game', {roomId: rs.room});
+      console.log('game start');
+      rs.socket.emit('start_game', {roomId: rs.room});
   }
+  rs.socket.on('update_roles', function(data){
+      sc.role = data
+      sc.$apply()
+  });
 
   rs.socket.on('disconnect')
 }]);
