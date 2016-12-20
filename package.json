@@ -1,10 +1,10 @@
 {
   "name": "Mafia",
   "version": "1.0.0",
-  "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
@@ -13,5 +13,14 @@
     "body-parser": "latest",
     "express": "^4.13.4",
     "socket.io": "^1.7.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryanjpan/mafia.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ryanjpan/mafia/issues"
+  },
+  "homepage": "https://github.com/ryanjpan/mafia#readme",
+  "description": ""
 }

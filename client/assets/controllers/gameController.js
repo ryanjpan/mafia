@@ -29,5 +29,10 @@ function(sc, http, loc, rs, r) {
       sc.$apply()
   });
 
+  sc.start = function(){
+        console.log('game start');
+        rs.socket.emit('start_game', {roomId: rs.room});
+  }
+
   rs.socket.on('disconnect')
 }]);
