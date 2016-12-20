@@ -1,4 +1,4 @@
-module.exports = function(socket, rooms){
+module.exports = function(io, socket, rooms){
     function isIn(userArr, name){
         for(var i=0; i < userArr.length; i++){
             if(userArr[i].name === name){
@@ -13,7 +13,9 @@ module.exports = function(socket, rooms){
         for(var i=0; i < roomUsers.length; i++){
             users.push(roomUsers[i].name);
         }
-        socket.emit('users_received', {users: users});
+        for(var i=0; i < roomUsers.length; i++){
+            io.sockets.connected[roomUsers[i].socketID].emit('users_received', {users: users});;
+        }
     })
 
 

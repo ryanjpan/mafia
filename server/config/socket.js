@@ -7,7 +7,7 @@ module.exports = function(server){
     io.sockets.on('connection', function(socket){
         console.log('using sockets');
         console.log(socket.id);
-        require('./sockets/join.js')(socket, rooms);
+        require('./sockets/join.js')(io, socket, rooms);
         require('./sockets/chat.js')(io, socket, rooms);
     });
 }

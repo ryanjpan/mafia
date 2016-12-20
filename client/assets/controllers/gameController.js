@@ -1,7 +1,6 @@
 app.controller('gameController', ['$scope','$http', '$location', '$rootScope', '$route',
 function(sc, http, loc, rs, r) {
     sc.chatbox = "";
-    sc.users = "";
     if(!rs.user){
         loc.url('/');
         return;
@@ -13,6 +12,7 @@ function(sc, http, loc, rs, r) {
 
     rs.socket.on('users_received', function(data){
         console.log(data);
+        sc.users = "";
         for(var i=0; i<data.users.length; i++){
             sc.users += data.users[i] + '\n';
         }
