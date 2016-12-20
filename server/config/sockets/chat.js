@@ -29,4 +29,5 @@ module.exports = function(io, socket, rooms){
             updateUsers(data.roomId);
         }
     })
+
 }

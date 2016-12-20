@@ -9,5 +9,7 @@ module.exports = function(server){
         console.log(socket.id);
         require('./sockets/join.js')(io, socket, rooms);
         require('./sockets/chat.js')(io, socket, rooms);
+        require('./sockets/rules.js')(io, socket, rooms);
+        require('./sockets/game.js')(io, socket, rooms);
     });
 }
