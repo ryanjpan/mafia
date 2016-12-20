@@ -7,9 +7,10 @@ module.exports = function(io, socket, rooms){
         }
         return false;
     }
-    socket.on('receive_users', function(data){
+
+    function updateUsers(roomId){
         var users = [];
-        var roomUsers = rooms[data.roomId].users;
+        var roomUsers = rooms[roomId].users;
         for(var i=0; i < roomUsers.length; i++){
             users.push(roomUsers[i].name);
         }
@@ -18,6 +19,10 @@ module.exports = function(io, socket, rooms){
                 io.sockets.connected[roomUsers[i].socketID].emit('users_received', {users: users});
             }
         }
+    }
+
+    socket.on('receive_users', function(data){
+        updateUsers(data.roomId);
     })
 
 
