@@ -1,0 +1,22 @@
+<!--
+    will cycle through rolls having mafiosos choose who to kill
+    chat is unnecessary here because people can choose a consensus based on seeing what
+    other mafiosos are voting for
+
+
+    voting for all roles will happen simultaneously
+
+
+-->
+<div ng-model="mafia_vote" ng-if="checkUser(role)">
+  <ol>
+    <li></li>
+    <li ng-repeat="user in users">{{user.name}}</li>
+  </ol>
+</div>
+<div ng-model="detective_vote" ng-if="checkUser(role)">
+
+</div>
+<div ng-model="doctor_vote" ng-if="checkUser(role)">
+
+</div>
