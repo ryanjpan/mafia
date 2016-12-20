@@ -1,5 +1,8 @@
 app.controller('gameController', ['$scope','$http', '$location', '$rootScope', '$route',
 function(sc, http, loc, rs, r) {
+
+  // var textarea = document.getElementById('textbox');
+  // textarea.scrollTop = textarea.scrollHeight;
     sc.chatbox = "";
     if(!rs.user){
         loc.url('/');

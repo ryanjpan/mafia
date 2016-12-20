@@ -9,3 +9,7 @@ h1{
 #userList h3{
     text-align: center;
 }
+
+#users{
+  resize: none;
+}
