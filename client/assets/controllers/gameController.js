@@ -13,6 +13,10 @@ function(sc, http, loc, rs, r) {
     }
     joinInit();
 
+    //--------------------
+    //END INITIALIZATIONS
+    //-------------------
+
     function changeToDay(){
         sc.daytime = true;
         sc.votebox = "";
@@ -60,6 +64,6 @@ function(sc, http, loc, rs, r) {
 
     sc.dayVote = function(name){
         console.log('voted for', name);
-        //rs.socket.emit('day_vote', {user: name});
+        //rs.socket.emit('day_vote', {user: name, room: rs.room});
     }
 }]);
