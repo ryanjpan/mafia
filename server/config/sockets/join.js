@@ -35,7 +35,7 @@ module.exports = function(socket, rooms){
             socket.emit('user_response', {valid: false});
         }
         else{
-            rooms[data.room].users.push({name: data.user});
+            rooms[data.room].users.push({name: data.user, socketID: socket.id});
             console.log(rooms[data.room].users);
             socket.emit('user_response', {valid: true});
         }

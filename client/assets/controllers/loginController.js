@@ -12,7 +12,7 @@ function(sc, http, loc, rs, r) {
             rs.user = sc.userName;
             rs.room = sc.roomId;
             loc.url('/game');
-            r.reload();
+            sc.$apply();
         }
         else{
             console.log('user name invalid');

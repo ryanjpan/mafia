@@ -6,7 +6,7 @@ function(sc, http, loc, rs, r) {
         return;
     }
     sc.send_message = function(){
-        rs.socket.emit('chat_send', {user: rs.user, message: sc.message});
+        rs.socket.emit('chat_send', {user: rs.user, message: sc.message, roomId: rs.room});
     }
     rs.socket.on('update_chat', function(data){
         sc.$apply(function(){
