@@ -29,4 +29,5 @@ function(sc, http, loc, rs, r) {
       sc.$apply()
   });
 
+  rs.socket.on('disconnect')
 }]);

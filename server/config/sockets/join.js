@@ -14,7 +14,9 @@ module.exports = function(io, socket, rooms){
             users.push(roomUsers[i].name);
         }
         for(var i=0; i < roomUsers.length; i++){
-            io.sockets.connected[roomUsers[i].socketID].emit('users_received', {users: users});;
+            if(io.sockets.connected[roomUsers[i].socketID]){
+                io.sockets.connected[roomUsers[i].socketID].emit('users_received', {users: users});
+            }
         }
     })
 
