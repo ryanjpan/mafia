@@ -17,6 +17,7 @@ function(sc, http, loc, rs, r) {
         else{
             console.log('user name invalid');
             loc.url('/')
+            sc.$apply();
         }
     });
 
@@ -36,6 +37,7 @@ function(sc, http, loc, rs, r) {
             sc.userName = "";
             sc.roomId = "";
             loc.url('/');
+            sc.$apply();
         }
     });
 
