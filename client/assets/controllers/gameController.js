@@ -3,6 +3,7 @@ function(sc, http, loc, rs, r) {
 
     sc.showstart = true
     sc.chatbox = "";
+    sc.started = false;
 
     if(!rs.user){
         loc.url('/');
@@ -64,6 +65,7 @@ function(sc, http, loc, rs, r) {
     })
 
     rs.socket.on('game_start', function(data){
+        sc.started = true;
         changeToDay();
         sc.$apply();
     })
