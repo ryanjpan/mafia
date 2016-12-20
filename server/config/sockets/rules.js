@@ -20,7 +20,7 @@ module.exports = function(io, socket, rooms){
             9: {'Mafia': 2, 'Angel': 1, 'Civilian': 5, 'Cop': 1},
             10: {'Mafia': 3, 'Angel': 1, 'Civilian': 5, 'Cop': 1},
             11: {'Mafia': 3, 'Angel': 1, 'Civilian': 6, 'Cop': 1},
-            11: {'Mafia': 3, 'Angel': 1, 'Civilian': 7, 'Cop': 1},
+            12: {'Mafia': 3, 'Angel': 1, 'Civilian': 7, 'Cop': 1},
         }
 
 	    // SHUFFLE
