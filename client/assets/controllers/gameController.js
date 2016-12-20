@@ -1,12 +1,13 @@
 app.controller('gameController', ['$scope','$http', '$location', '$rootScope', '$route',
 function(sc, http, loc, rs, r) {
+
+    sc.showstart = true
+    sc.chatbox = "";
+
     if(!rs.user){
         loc.url('/');
         return;
     }
-
-    sc.showstart = true;
-    sc.chatbox = "";
 
     function joinInit(){
         rs.socket.emit('receive_users', {roomId: rs.room});
@@ -50,6 +51,11 @@ function(sc, http, loc, rs, r) {
         sc.role = data;
         sc.$apply();
     });
+    rs.socket.on('all_roles', function(data){
+        sc.allroles = data
+        console.log(data)
+        sc.$apply()
+    });
 
     rs.socket.on('players_sent', function(data){
         console.log(sc.players);
@@ -63,7 +69,17 @@ function(sc, http, loc, rs, r) {
     })
 
     sc.dayVote = function(name){
+        if(!name){
+            return;
+        }
+        sc.votecast = true;
         console.log('voted for', name);
-        //rs.socket.emit('day_vote', {user: name, room: rs.room});
+        rs.socket.emit('day_vote', {votedfor: name, roomId: rs.room, user: rs.user});
     }
+    rs.socket.on('vote_cast', function(data){
+        console.log(data)
+        sc.votebox += data.user + ' voted for ' + data.vote + '\n';
+        sc.$apply();
+    })
+
 }]);
