@@ -11,6 +11,16 @@
     </form>
 </div>
 
+<div ng-if="daytime">
+    <form ng-submit="dayVote(voteOption)">
+        <select ng-model="voteOption">
+            <option ng-repeat="player in players" value="{{player}}">{{player}}</option>
+            <input type="submit" name="" value="Vote to Execute">
+        </select>
+    </form>
+    <textarea id="votebox" name="textbox" ng-model="votebox" rows="8" scroll-glue disabled></textarea>
+</div>
+
 <div id='roles' ng-if='showstart'>
     <button ng-click='start()'>Start Game</button>
 </div>
@@ -22,3 +32,4 @@
     <p>Angel: {{allroles['allroles']['Angel']}}</p>
     <p>Civilians: {{allroles['allroles']['Civilian']}}</p>
 </div>
+

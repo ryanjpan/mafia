@@ -1,15 +1,26 @@
 app.controller('gameController', ['$scope','$http', '$location', '$rootScope', '$route',
 function(sc, http, loc, rs, r) {
+
     sc.showstart = true
     sc.chatbox = "";
+
     if(!rs.user){
         loc.url('/');
         return;
     }
+
+    sc.showstart = true;
+    sc.chatbox = "";
+
     function joinInit(){
         rs.socket.emit('receive_users', {roomId: rs.room});
     }
     joinInit();
+
+    function changeToDay(){
+        sc.daytime = true;
+        sc.votebox = "";
+    }
 
     rs.socket.on('users_received', function(data){
         console.log(data);
@@ -34,9 +45,10 @@ function(sc, http, loc, rs, r) {
         rs.socket.emit('start_game', {roomId: rs.room});
         sc.showstart = !sc.showstart
     }
+
     rs.socket.on('update_roles', function(data){
-        sc.role = data
-        sc.$apply()
+        sc.role = data;
+        sc.$apply();
     });
     rs.socket.on('all_roles', function(data){
         sc.allroles = data
@@ -44,5 +56,19 @@ function(sc, http, loc, rs, r) {
         sc.$apply()
     });
 
-    rs.socket.on('disconnect')
+    rs.socket.on('players_sent', function(data){
+        console.log(sc.players);
+        sc.players = data.players;
+        sc.$apply();
+    })
+
+    rs.socket.on('game_start', function(data){
+        changeToDay();
+        sc.$apply();
+    })
+
+    sc.dayVote = function(name){
+        console.log('voted for', name);
+        //rs.socket.emit('day_vote', {user: name});
+    }
 }]);
