@@ -17,6 +17,7 @@
   ],
   "dependencies": {
     "angular": "^1.5.3",
-    "angular-route": "^1.5.3"
+    "angular-route": "^1.5.3",
+    "angular-scroll-glue": "^2.1.0"
   }
 }
