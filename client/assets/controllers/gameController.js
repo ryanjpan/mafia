@@ -1,6 +1,6 @@
 app.controller('gameController', ['$scope','$http', '$location', '$rootScope', '$route',
 function(sc, http, loc, rs, r) {
-
+    sc.showstart = true
     sc.chatbox = "";
     if(!rs.user){
         loc.url('/');
@@ -32,10 +32,15 @@ function(sc, http, loc, rs, r) {
     sc.start = function(){
         console.log('game start');
         rs.socket.emit('start_game', {roomId: rs.room});
-        // sc.showstart = !sc.showstart
+        sc.showstart = !sc.showstart
     }
     rs.socket.on('update_roles', function(data){
         sc.role = data
+        sc.$apply()
+    });
+    rs.socket.on('all_roles', function(data){
+        sc.allroles = data
+        console.log(data)
         sc.$apply()
     });
 
