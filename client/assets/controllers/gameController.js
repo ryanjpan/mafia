@@ -20,23 +20,24 @@ function(sc, http, loc, rs, r) {
         sc.$apply();
     });
 
-  sc.send_message = function(){
-      rs.socket.emit('chat_send', {user: rs.user, message: sc.message, roomId: rs.room});
-  }
-  rs.socket.on('update_chat', function(data){
-      sc.chatbox += data.user + ': ' + data.message + '\n';
-      sc.message = "";
-      sc.$apply()
-  });
+    sc.send_message = function(){
+        rs.socket.emit('chat_send', {user: rs.user, message: sc.message, roomId: rs.room});
+    }
+    rs.socket.on('update_chat', function(data){
+        sc.chatbox += data.user + ': ' + data.message + '\n';
+        sc.message = "";
+        sc.$apply()
+    });
 
-  sc.start = function(){
-      console.log('game start');
-      rs.socket.emit('start_game', {roomId: rs.room});
-  }
-  rs.socket.on('update_roles', function(data){
-      sc.role = data
-      sc.$apply()
-  });
+    sc.start = function(){
+        console.log('game start');
+        rs.socket.emit('start_game', {roomId: rs.room});
+        // sc.showstart = !sc.showstart
+    }
+    rs.socket.on('update_roles', function(data){
+        sc.role = data
+        sc.$apply()
+    });
 
-  rs.socket.on('disconnect')
+    rs.socket.on('disconnect')
 }]);
