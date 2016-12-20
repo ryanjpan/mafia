@@ -1,5 +1,10 @@
 <div>
     <textarea name="textbox" ng-model="chatbox" rows="8" cols="80" disabled></textarea>
+    <div id="userList">
+        <h3>Users</h3>
+        <textarea id="users" ng-model=users rows="8" disabled>
+        </textarea>
+    </div>
     <form ng-submit="send_message()">
         <input type="text" ng-model="message">
         <input type="submit" value="Send">

@@ -7,10 +7,18 @@ module.exports = function(socket, rooms){
         }
         return false;
     }
+    socket.on('receive_users', function(data){
+        var users = [];
+        var roomUsers = rooms[data.roomId].users;
+        for(var i=0; i < roomUsers.length; i++){
+            users.push(roomUsers[i].name);
+        }
+        socket.emit('users_received', {users: users});
+    })
+
 
     socket.on('create_room', function(data){
         if(rooms[data.room]){
-            console.log('room exists');
             socket.emit('room_response', {valid: false});
         }
         else{
@@ -30,13 +38,11 @@ module.exports = function(socket, rooms){
     });
 
     socket.on('set_user', function(data){
-        console.log('user name', data.user);
         if(isIn(rooms[data.room].users, data.user)){
             socket.emit('user_response', {valid: false});
         }
         else{
             rooms[data.room].users.push({name: data.user, socketID: socket.id});
-            console.log(rooms[data.room].users);
             socket.emit('user_response', {valid: true});
         }
     });
