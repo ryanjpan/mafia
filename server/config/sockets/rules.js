@@ -1,4 +1,20 @@
 module.exports = function(io, socket, rooms){
+    function emitAlive(roomId){
+        room = rooms[roomId];
+        users = room.users;
+        players = [];
+        for(var i=0; i < users.length; i++){
+            if(users[i].alive){
+                players.push(users[i].name);
+            }
+        }
+        for(var i=0; i < users.length; i++){
+            if(io.sockets.connected[users[i].socketID]){
+                io.sockets.connected[users[i].socketID].emit('players_sent', {players: players});
+            }
+        }
+    }
+
     socket.on('start_game', function(data){
         room = rooms[data.roomId];
 	    var Rulebook = {
@@ -13,6 +29,7 @@ module.exports = function(io, socket, rooms){
 	            12:['Mafia', 'Mafia', 'Mafia', 'Angel', 'Cop', 'Civilian', 'Civilian', 'Civilian', 'Civilian', 'Civilian', 'Civilian', 'Civilian'],
 	    }
         var numRoles = {
+            1: {'Mafia': 1},
             5: {'Mafia': 1, 'Angel': 1, 'Civilian': 3},
             6: {'Mafia': 1, 'Angel': 1, 'Civilian': 3, 'Cop': 1},
             7: {'Mafia': 2, 'Angel': 1, 'Civilian': 3, 'Cop': 1},
@@ -27,16 +44,21 @@ module.exports = function(io, socket, rooms){
 	    var users = room.users;
 	    var roles = Rulebook[users.length];
 	    for (var x=0; x<users.length;x++){
-	        for (i in roles){
-	            users[x].role = roles[i];
-	            users[x].alive = true;
-	            if(io.sockets.connected[users[i].socketID]){
-	                io.sockets.connected[users[i].socketID].emit('update_roles', {role: users[x].role});
-	            }
-	        }
+            users[x].role = roles[x];
+            users[x].alive = true;
+            if(io.sockets.connected[users[x].socketID]){
+                io.sockets.connected[users[x].socketID].emit('update_roles', {role: users[x].role});
+            }
 	    }
         room.numUsersAlive = room.users.length;
         room.numRoles = numRoles[users.length];
+        emitAlive(data.roomId);
+        for (var x=0; x<users.length;x++){
+            if(io.sockets.connected[users[x].socketID]){
+                io.sockets.connected[users[x].socketID].emit('game_start', {});
+            }
+	    }
+
 	    console.log(users);
     })
 }
