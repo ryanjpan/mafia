@@ -39,11 +39,14 @@ module.exports = function(io, socket, rooms){
     function changeToDay(roomId){
         rooms[roomId].vote = {};
         emitAliveDead(roomId);
+        console.log('change to day, not finished yet');
     }
 
     function changeToNight(roomId){
         var users = rooms[roomId].users;
-
+        rooms[roomId].mafiaexecute = "";
+        rooms[roomId].saved = "";
+        rooms[roomId].investigated = "";
         for(var i=0; i < users.length; i++){
             if(io.sockets.connected[users[i].socketID]){
                 io.sockets.connected[users[i].socketID].emit('set_nighttime', {});
@@ -167,7 +170,7 @@ module.exports = function(io, socket, rooms){
                 }
             }
             room.mafiavote[data.user] = data.votedfor;
-            if(mafiaDoneVoting(roomId)){
+            if(mafiaDoneVoting(data.roomId)){
                 room.mafiaexecute = data.votedfor;
                 //disable mafia voting
                 for(var i = 0; i < users.length; i++){
@@ -177,6 +180,40 @@ module.exports = function(io, socket, rooms){
                 }
             }
         }
+        else if(data.role == 'Angel'){
+            room.saved = data.votedfor;
+        }
+        else if(data.role == 'Cop'){
+            room.investigated = data.votedfor;
+        }
+
+        if(room.mafiaexecute && (room.aliveList['Angel'] === 0 || room.saved) && (room.aliveList['Cop'] === 0 || room.investigated)){
+            //all the night voting is done
+            var users = room.users;
+            if(room.saved === room.mafiaexecute){
+                for(var i=0; i < users.length; i++){
+                    if(io.sockets.connected[users[i].socketID]){
+                        io.sockets.connected[users[i].socketID].emit('night_event', {user: room.saved, status: 'saved'});
+                    }
+                }
+            }
+            else{
+                //someone died
+                var role;
+                for(var i=0; i < users.length; i++){
+                    if(users[i].name === room.mafiaexecute){
+                        role = users[i].role;
+                    }
+                }
+                for(var i=0; i < users.length; i++){
+                    if(io.sockets.connected[users[i].socketID]){
+                        io.sockets.connected[users[i].socketID].emit('night_event', {user: room.mafiaexecute, status: 'died', role: role});
+                    }
+                }
+            }
+            setTimeout(function(){changeToDay(data.roomId);}, 5000);
+        } // end check for night voting done
+
     }) // end night vote
 
 }

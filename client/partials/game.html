@@ -1,6 +1,7 @@
 <div>
     <h1 ng-if="daytime">It is now day time!</h1>
     <h1 ng-if="!daytime && started">It is now night time!</h1>
+    <h3 ng-if="nightevent">{{nightevent}}</h3>
     <div id="textbox">
         <h3>Chat Box</h3>
         <textarea name="textbox" ng-model="chatbox" rows="8" cols="80" scroll-glue disabled></textarea>
