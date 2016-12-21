@@ -2,8 +2,14 @@ h1{
     color: green;
 }
 
+#textbox{
+    vertical-align: top;
+    display: inline-block;
+}
+
 #userList {
     display: inline-block;
+    vertical-align: top;
 }
 
 #userList h3{
@@ -12,8 +18,19 @@ h1{
 
 #users{
     resize: none;
+    vertical-align: top;
 }
 
 #votebox{
     resize: none;
+}
+
+#alive, #dead {
+    vertical-align: top;
+    display: inline-block;
+    border-style: solid;
+    border-width: thin;
+    padding: 10px;
+    width: 100px;
+    height: 200px;
 }

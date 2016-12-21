@@ -3,6 +3,7 @@ function(sc, http, loc, rs, r) {
 
     sc.showstart = true
     sc.chatbox = "";
+    sc.started = false;
 
     if(!rs.user){
         loc.url('/');
@@ -14,6 +15,10 @@ function(sc, http, loc, rs, r) {
     }
     joinInit();
 
+    //--------------------
+    //END INITIALIZATIONS
+    //-------------------
+
     function changeToDay(){
         sc.daytime = true;
         sc.votebox = "";
@@ -21,6 +26,8 @@ function(sc, http, loc, rs, r) {
 
     rs.socket.on('users_received', function(data){
         console.log(data);
+        sc.chatcount = data.users.length;
+        console.log(sc.chatcount);
         sc.users = "";
         for(var i=0; i<data.users.length; i++){
             sc.users += data.users[i] + '\n';
@@ -35,6 +42,7 @@ function(sc, http, loc, rs, r) {
         sc.chatbox += data.user + ': ' + data.message + '\n';
         sc.message = "";
         sc.$apply()
+        console.log(sc.chatcount);
     });
 
     sc.start = function(){
@@ -60,6 +68,7 @@ function(sc, http, loc, rs, r) {
     })
 
     rs.socket.on('game_start', function(data){
+        sc.started = true;
         changeToDay();
         sc.$apply();
     })
@@ -77,5 +86,11 @@ function(sc, http, loc, rs, r) {
         sc.votebox += data.user + ' voted for ' + data.vote + '\n';
         sc.$apply();
     })
-
+    sc.StartCheck = function(){
+      if(1 < sc.chatcount && sc.chatcount < 5){
+        return true;
+      } else {
+        return false;
+      }
+    };
 }]);
