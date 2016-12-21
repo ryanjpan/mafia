@@ -146,6 +146,15 @@ function(sc, http, loc, rs, r) {
     };
 
     sc.nightVote= function(vote){
-        console.log(sc.voteOption);
+        if(sc.role !== 'Mafia'){
+            //if not mafia, can only vote once
+            sc.votecast = true;
+        }
+        console.log(vote);
     }
+
+    rs.socket.on('mafia_votedone', function(data){
+        sc.votecast = true;
+        sc.$apply();
+    })
 }]);

@@ -49,7 +49,23 @@ module.exports = function(io, socket, rooms){
                 io.sockets.connected[users[i].socketID].emit('set_nighttime', {});
             }
         }
-        console.log('not implemented: change to night');
+
+        rooms[roomId].mafiavote = {}
+    }
+
+    function mafiaDoneVoting(roomId){
+        var voted;
+        for(var key in rooms[roomId].mafiavote){
+            if(voted === undefined){
+                voted = rooms[roomId].mafiavote[key];
+            }
+            else{
+                if(voted !== rooms[roomId].mafiavote[key]){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     socket.on('day_vote', function(data){
@@ -115,5 +131,27 @@ module.exports = function(io, socket, rooms){
         }
 
     }); // end day vote
+
+    socket.on('night_vote', function(data){
+        var room = rooms[data.roomId];
+        if(data.role == 'Mafia'){
+            var users = room.users;
+            for(var i = 0; i < users.length; i++){
+                if(io.sockets.connected[users[i].socketID] && users[i].role === 'Mafia'){
+                    io.sockets.connected[users[i].socketID].emit('mafia_votecast', {user: data.user, vote: data.votedfor });
+                }
+            }
+            room.mafiavote[data.user] = data.votedfor;
+            if(mafiaDoneVoting(roomId)){
+                room.mafiaexecute = data.votedfor;
+                //disable mafia voting
+                for(var i = 0; i < users.length; i++){
+                    if(io.sockets.connected[users[i].socketID] && users[i].role === 'Mafia'){
+                        io.sockets.connected[users[i].socketID].emit('mafia_votedone', {});
+                    }
+                }
+            }
+        }
+    }) // end night vote
 
 }
