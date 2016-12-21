@@ -4,6 +4,11 @@ function(sc, http, loc, rs, r) {
     sc.showstart = true
     sc.chatbox = "";
     sc.started = false;
+    sc.action = {
+        'Mafia': 'Kill',
+        'Cop': 'Investigate',
+        'Angel': 'Save'
+    }
 
     if(!rs.user){
         loc.url('/');
@@ -23,6 +28,16 @@ function(sc, http, loc, rs, r) {
         sc.daytime = true;
         sc.votebox = "";
         sc.showexecuted = false;
+        sc.votecast = false;
+        sc.nooneexecuted = false;
+    }
+
+    function changeToNight(){
+        sc.votecast = false;
+        sc.daytime = false;
+        if(sc.role == 'Mafia'){
+            sc.mafiabox = "";
+        }
     }
 
     rs.socket.on('users_received', function(data){
@@ -70,6 +85,7 @@ function(sc, http, loc, rs, r) {
 
     rs.socket.on('players_sent', function(data){
         sc.players = data.players;
+        sc.players.push('');
         sc.allroles = data.aliveList
         sc.deadroles = data.deadList
         sc.$apply();
@@ -83,7 +99,7 @@ function(sc, http, loc, rs, r) {
     });
 
     sc.dayVote = function(name){
-        if(!name){
+        if(name === undefined){
             return;
         }
         sc.votecast = true;
@@ -105,10 +121,20 @@ function(sc, http, loc, rs, r) {
         sc.$apply();
     });
 
+    rs.socket.on('nooneexecuted', function(data){
+        sc.nooneexecuted = true;
+        sc.$apply();
+    })
+
     rs.socket.on('set_dead', function(data){
         sc.dead = true;
         console.log('you ded');
     });
+
+    rs.socket.on('set_nighttime', function(data){
+        changeToNight();
+        sc.$apply();
+    })
 
     sc.StartCheck = function(){
       if(1 < sc.chatcount && sc.chatcount < 5){
@@ -117,4 +143,17 @@ function(sc, http, loc, rs, r) {
         return false;
       }
     };
+
+    sc.nightVote= function(vote){
+        if(sc.role !== 'Mafia'){
+            //if not mafia, can only vote once
+            sc.votecast = true;
+        }
+        console.log(vote);
+    }
+
+    rs.socket.on('mafia_votedone', function(data){
+        sc.votecast = true;
+        sc.$apply();
+    })
 }]);

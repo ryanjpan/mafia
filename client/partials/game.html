@@ -4,6 +4,10 @@
     <div id="textbox">
         <h3>Chat Box</h3>
         <textarea name="textbox" ng-model="chatbox" rows="8" cols="80" scroll-glue disabled></textarea>
+        <form ng-submit="send_message()">
+            <input type="text" ng-model="message">
+            <input type="submit" value="Send" ng-disabled="started && (!daytime || dead)">
+        </form>
     </div>
     <div id="userList">
         <h3>Users</h3>
@@ -24,14 +28,11 @@
         <p>Angel: {{deadroles['Angel']}}</p>
         <p>Civilians: {{deadroles['Civilian']}}</p>
     </div>
-    <form ng-submit="send_message()">
-        <input type="text" ng-model="message">
-        <input type="submit" value="Send" ng-disabled="!daytime || dead">
-    </form>
 </div>
 
 <div ng-if="daytime">
     <h2 id="execution" ng-if="showexecuted">{{executed}} has been executed, (s)he was a {{executedrole}}</h2>
+    <h2 ng-if="nooneexecuted">No one was executed</h2>
     <form ng-submit="dayVote(voteOption)">
         <select ng-model="voteOption" ng-options="player for player in players">
           <option value="">--Select--</option>
@@ -41,12 +42,22 @@
     <textarea id="votebox" name="textbox" ng-model="votebox" rows="8" scroll-glue disabled></textarea>
 </div>
 
-<div ng-if="!daytime && player.role == 'Mafia'">
+<div ng-if="!daytime && role == 'Mafia'">
   <form ng-submit="nightVote(voteOption)">
       <select ng-model="voteOption" ng-options="player for player in players">
-        <option value="">--slaughter this dood--</option>
+        <option value="">--{{action[role]}} a person--</option>
       </select>
-      <input type="submit" name="" value="Vote to Execute" data-ng-disabled="votecast || dead">
+      <input type="submit" name="" value="{{action[role]}}" data-ng-disabled="dead || votecast">
+  </form>
+  <textarea id="mafiabox" name="textbox" ng-model="mafiabox" rows="8" scroll-glue disabled></textarea>
+</div>
+
+<div ng-if="!daytime && (role == 'Cop' || role == 'Angel' )">
+  <form ng-submit="nightVote(voteOption)">
+      <select ng-model="voteOption" ng-options="player for player in players">
+        <option value="">--{{action[role]}} a person--</option>
+      </select>
+      <input type="submit" name="" value="{{action[role]}}" data-ng-disabled="votecast || dead">
   </form>
 </div>
 
