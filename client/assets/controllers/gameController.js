@@ -4,6 +4,11 @@ function(sc, http, loc, rs, r) {
     sc.showstart = true
     sc.chatbox = "";
     sc.started = false;
+    sc.action = {
+        'Mafia': 'Kill',
+        'Cop': 'Investigate',
+        'Angel': 'Save'
+    }
 
     if(!rs.user){
         loc.url('/');
@@ -23,6 +28,16 @@ function(sc, http, loc, rs, r) {
         sc.daytime = true;
         sc.votebox = "";
         sc.showexecuted = false;
+        sc.votecast = false;
+        sc.nooneexecuted = false;
+    }
+
+    function changeToNight(){
+        sc.votecast = false;
+        sc.daytime = false;
+        if(sc.role == 'Mafia'){
+            sc.mafiabox = "";
+        }
     }
 
     rs.socket.on('users_received', function(data){
@@ -52,13 +67,23 @@ function(sc, http, loc, rs, r) {
     }
 
     rs.socket.on('update_roles', function(data){
-        sc.role = data;
+        sc.role = data.role;
+        var image = {
+            Civilian: 'citizen1',
+            Mafia: 'mafia1',
+            Cop: 'cop',
+            Angel: 'doctor',
+        }
+        console.log(data.role)
+        sc.image = image[data.role]
+        console.log(sc.image)
         sc.$apply();
     });
 
     rs.socket.on('players_sent', function(data){
         console.log(sc.players);
         sc.players = data.players;
+        sc.players.push('');
         sc.allroles = data.aliveList
         console.log(data.aliveList)
         sc.deadroles = data.deadList
@@ -67,12 +92,13 @@ function(sc, http, loc, rs, r) {
 
     rs.socket.on('game_start', function(data){
         sc.started = true;
+        sc.dead = false;
         changeToDay();
         sc.$apply();
     });
 
     sc.dayVote = function(name){
-        if(!name){
+        if(name === undefined){
             return;
         }
         sc.votecast = true;
@@ -90,13 +116,26 @@ function(sc, http, loc, rs, r) {
         sc.showexecuted = true;
         console.log(data.executed, 'was executed');
         sc.executed = data.user;
+        console.log(data)
+        console.log(data.role)
         sc.executedrole = data.role;
         sc.$apply();
     });
 
+    rs.socket.on('nooneexecuted', function(data){
+        sc.nooneexecuted = true;
+        sc.$apply();
+    })
+
     rs.socket.on('set_dead', function(data){
+        sc.dead = true;
         console.log('you ded');
     });
+
+    rs.socket.on('set_nighttime', function(data){
+        changeToNight();
+        sc.$apply();
+    })
 
     sc.StartCheck = function(){
       if(1 < sc.chatcount && sc.chatcount < 5){
@@ -105,4 +144,17 @@ function(sc, http, loc, rs, r) {
         return false;
       }
     };
+
+    sc.nightVote= function(vote){
+        if(sc.role !== 'Mafia'){
+            //if not mafia, can only vote once
+            sc.votecast = true;
+        }
+        console.log(vote);
+    }
+
+    rs.socket.on('mafia_votedone', function(data){
+        sc.votecast = true;
+        sc.$apply();
+    })
 }]);

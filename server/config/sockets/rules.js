@@ -59,7 +59,6 @@ module.exports = function(io, socket, rooms){
           room.started = true;
           room.vote = {};
 
-
         for (var x=0; x<users.length;x++){
             if(io.sockets.connected[users[x].socketID]){
                 io.sockets.connected[users[x].socketID].emit('game_start', {});
