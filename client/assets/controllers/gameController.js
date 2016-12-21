@@ -86,6 +86,7 @@ function(sc, http, loc, rs, r) {
         sc.votebox += data.user + ' voted for ' + data.vote + '\n';
         sc.$apply();
     })
+
     sc.StartCheck = function(){
       if(1 < sc.chatcount && sc.chatcount < 5){
         return true;
