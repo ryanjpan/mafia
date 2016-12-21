@@ -1,4 +1,4 @@
-app.controller('gameController', ['$scope','$http', '$location', '$rootScope', '$route',
+app.controller('gameController', ['$scope', '$http', '$location', '$rootScope', '$route',
 function(sc, http, loc, rs, r) {
 
     sc.showstart = true
