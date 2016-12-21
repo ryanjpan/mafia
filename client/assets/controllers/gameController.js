@@ -4,6 +4,11 @@ function(sc, http, loc, rs, r) {
     sc.showstart = true
     sc.chatbox = "";
     sc.started = false;
+    sc.action = {
+        'Mafia': 'Kill',
+        'Cop': 'Investigate',
+        'Angel': 'Save'
+    }
 
     if(!rs.user){
         loc.url('/');
@@ -23,6 +28,15 @@ function(sc, http, loc, rs, r) {
         sc.daytime = true;
         sc.votebox = "";
         sc.showexecuted = false;
+        sc.votecast = false;
+    }
+
+    function changeToNight(){
+        sc.votecast = false;
+        sc.daytime = false;
+        if(sc.role == 'Mafia'){
+            sc.mafiabox = "";
+        }
     }
 
     rs.socket.on('users_received', function(data){
@@ -110,6 +124,11 @@ function(sc, http, loc, rs, r) {
         sc.dead = true;
         console.log('you ded');
     });
+
+    rs.socket.on('set_nighttime', function(data){
+        changeToNight();
+        sc.$apply();
+    })
 
     sc.StartCheck = function(){
       if(1 < sc.chatcount && sc.chatcount < 5){

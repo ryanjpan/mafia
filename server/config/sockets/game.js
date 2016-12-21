@@ -42,6 +42,13 @@ module.exports = function(io, socket, rooms){
     }
 
     function changeToNight(roomId){
+        var users = rooms[roomId].users;
+
+        for(var i=0; i < users.length; i++){
+            if(io.sockets.connected[users[i].socketID]){
+                io.sockets.connected[users[i].socketID].emit('set_nighttime', {});
+            }
+        }
         console.log('not implemented: change to night');
     }
 
@@ -85,7 +92,7 @@ module.exports = function(io, socket, rooms){
                 //update Alive and Dead List
                 var aliveList = rooms[data.roomId].aliveList
                 var deadList = rooms[data.roomId].deadList
-                aliveList[users[index].role] -= 1 
+                aliveList[users[index].role] -= 1
                 deadList[users[index].role] += 1
 
                 for(var i=0; i < users.length; i++){
@@ -99,7 +106,7 @@ module.exports = function(io, socket, rooms){
                     io.sockets.connected[users[index].socketID].emit('set_dead', {});
                 }
                 emitAliveDead(data.roomId);
-                changeToNight(data.roomId);
+                setTimeout(function(){ changeToNight(data.roomId); }, 5000);
             }
         }
 
