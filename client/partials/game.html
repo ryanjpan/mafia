@@ -36,6 +36,7 @@
 
 
 <div ng-if="daytime">
+    <h2 id="execution" ng-if="showexecuted">{{executed}} has been executed, (s)he was a {{executedrole}}</h2>
     <form ng-submit="dayVote(voteOption)">
         <select ng-model="voteOption" ng-options="player for player in players">
           <option value="">--lynch some person--</option>

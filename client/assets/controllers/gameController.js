@@ -22,6 +22,7 @@ function(sc, http, loc, rs, r) {
     function changeToDay(){
         sc.daytime = true;
         sc.votebox = "";
+        sc.showexecuted = false;
     }
 
     rs.socket.on('users_received', function(data){
@@ -81,11 +82,25 @@ function(sc, http, loc, rs, r) {
         console.log('voted for', name);
         rs.socket.emit('day_vote', {votedfor: name, roomId: rs.room, user: rs.user});
     }
+
     rs.socket.on('vote_cast', function(data){
         console.log(data)
         sc.votebox += data.user + ' voted for ' + data.vote + '\n';
         sc.$apply();
     })
+
+    rs.socket.on('executed', function(data){
+        sc.showexecuted = true;
+        console.log(data.executed, 'was executed');
+        sc.executed = data.user;
+        sc.executedrole = data.role;
+        sc.$apply();
+    })
+
+    rs.socket.on('set_dead', function(data){
+        console.log('you are dead');
+    })
+
     sc.StartCheck = function(){
       if(1 < sc.chatcount && sc.chatcount < 5){
         return true;
