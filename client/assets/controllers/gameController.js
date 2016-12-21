@@ -52,7 +52,8 @@ function(sc, http, loc, rs, r) {
     }
 
     rs.socket.on('update_roles', function(data){
-        sc.role = data;
+        sc.role = data.role;
+        console.log(sc.role);
         sc.$apply();
     });
 
