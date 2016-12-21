@@ -21,6 +21,8 @@ function(sc, http, loc, rs, r) {
 
     rs.socket.on('users_received', function(data){
         console.log(data);
+        sc.chatcount = data.users.length;
+        console.log(sc.chatcount);
         sc.users = "";
         for(var i=0; i<data.users.length; i++){
             sc.users += data.users[i] + '\n';
@@ -35,6 +37,7 @@ function(sc, http, loc, rs, r) {
         sc.chatbox += data.user + ': ' + data.message + '\n';
         sc.message = "";
         sc.$apply()
+        console.log(sc.chatcount);
     });
 
     sc.start = function(){
@@ -77,5 +80,11 @@ function(sc, http, loc, rs, r) {
         sc.votebox += data.user + ' voted for ' + data.vote + '\n';
         sc.$apply();
     })
-
+    sc.StartCheck = function(){
+      if(1 < sc.chatcount && sc.chatcount < 5){
+        return true;
+      } else {
+        return false;
+      }
+    };
 }]);
