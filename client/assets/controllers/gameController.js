@@ -29,6 +29,7 @@ function(sc, http, loc, rs, r) {
         sc.votebox = "";
         sc.showexecuted = false;
         sc.votecast = false;
+        sc.nooneexecuted = false;
     }
 
     function changeToNight(){
@@ -82,6 +83,7 @@ function(sc, http, loc, rs, r) {
     rs.socket.on('players_sent', function(data){
         console.log(sc.players);
         sc.players = data.players;
+        sc.players.push('');
         sc.allroles = data.aliveList
         console.log(data.aliveList)
         sc.deadroles = data.deadList
@@ -96,7 +98,7 @@ function(sc, http, loc, rs, r) {
     });
 
     sc.dayVote = function(name){
-        if(!name){
+        if(name === undefined){
             return;
         }
         sc.votecast = true;
@@ -120,6 +122,11 @@ function(sc, http, loc, rs, r) {
         sc.$apply();
     });
 
+    rs.socket.on('nooneexecuted', function(data){
+        sc.nooneexecuted = true;
+        sc.$apply();
+    })
+
     rs.socket.on('set_dead', function(data){
         sc.dead = true;
         console.log('you ded');
@@ -137,4 +144,8 @@ function(sc, http, loc, rs, r) {
         return false;
       }
     };
+
+    sc.nightVote= function(vote){
+        console.log(sc.voteOption);
+    }
 }]);

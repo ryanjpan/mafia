@@ -78,8 +78,12 @@ module.exports = function(io, socket, rooms){
         if(rooms[data.roomId].numVoted === rooms[data.roomId].numUsersAlive){
             var executed = tally(vote);
             if (executed === ""){
-                //no one dies
-                changeToNight(data.roomId);
+                for(var i=0; i < users.length; i++){
+                    if(io.sockets.connected[users[i].socketID]){
+                        io.sockets.connected[users[i].socketID].emit('nooneexecuted', {});
+                    }
+                }
+                setTimeout(function(){ changeToNight(data.roomId); }, 5000);
             }
             else{ //kill the user who won the vote
                 var index;
