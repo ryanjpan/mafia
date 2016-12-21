@@ -1,11 +1,16 @@
 module.exports = function(io, socket, rooms){
     function isIn(userArr, name){
-        for(var i=0; i < userArr.length; i++){
-            if(userArr[i].name === name){
-                return true;
-            }
+        // for(var i=0; i < userArr.length; i++){
+        //     if(userArr[i].name === name){
+        //         return true;
+        //     }
+        // }
+        // return false;
+
+        if(userArr.indexOf(name) === -1){
+          return false;
         }
-        return false;
+        return true;
     }
 
     function updateUsers(roomId){
