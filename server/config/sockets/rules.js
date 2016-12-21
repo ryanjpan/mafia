@@ -53,6 +53,7 @@ module.exports = function(io, socket, rooms){
 	    }
         room.numUsersAlive = room.users.length;
         room.numRoles = numRoles[users.length];
+        room.started = true;
         room.vote = {};
 
         emitAlive(data.roomId);

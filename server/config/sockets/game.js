@@ -38,7 +38,7 @@ module.exports = function(io, socket, rooms){
 
     function changeToDay(roomId){
         rooms[roomId].vote = {};
-        emitAlive();
+        emitAlive(roomId);
     }
 
     function changeToNight(roomId){
@@ -92,7 +92,7 @@ module.exports = function(io, socket, rooms){
                     users[index].alive = false;
                     io.sockets.connected[users[index].socketID].emit('set_dead', {});
                 }
-                emitAlive();
+                emitAlive(data.roomId);
                 changeToNight(data.roomId);
             }
         }
