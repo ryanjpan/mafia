@@ -76,6 +76,7 @@ function(sc, http, loc, rs, r) {
 
     rs.socket.on('game_start', function(data){
         sc.started = true;
+        sc.dead = false;
         changeToDay();
         sc.$apply();
     });
@@ -106,6 +107,7 @@ function(sc, http, loc, rs, r) {
     });
 
     rs.socket.on('set_dead', function(data){
+        sc.dead = true;
         console.log('you ded');
     });
 
