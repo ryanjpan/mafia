@@ -26,9 +26,9 @@ function(sc, http, loc, rs, r) {
     }
 
     rs.socket.on('users_received', function(data){
-        console.log(data);
+        // console.log(data);
         sc.chatcount = data.users.length;
-        console.log(sc.chatcount);
+        // console.log(sc.chatcount);
         sc.users = "";
         for(var i=0; i<data.users.length; i++){
             sc.users += data.users[i] + '\n';
@@ -43,7 +43,6 @@ function(sc, http, loc, rs, r) {
         sc.chatbox += data.user + ': ' + data.message + '\n';
         sc.message = "";
         sc.$apply()
-        console.log(sc.chatcount);
     });
 
     sc.start = function(){
@@ -64,13 +63,13 @@ function(sc, http, loc, rs, r) {
         console.log(data.aliveList)
         sc.deadroles = data.deadList
         sc.$apply();
-    })
+    });
 
     rs.socket.on('game_start', function(data){
         sc.started = true;
         changeToDay();
         sc.$apply();
-    })
+    });
 
     sc.dayVote = function(name){
         if(!name){
@@ -85,7 +84,7 @@ function(sc, http, loc, rs, r) {
         console.log(data)
         sc.votebox += data.user + ' voted for ' + data.vote + '\n';
         sc.$apply();
-    })
+    });
 
     rs.socket.on('executed', function(data){
         sc.showexecuted = true;
@@ -93,11 +92,11 @@ function(sc, http, loc, rs, r) {
         sc.executed = data.user;
         sc.executedrole = data.role;
         sc.$apply();
-    })
+    });
 
     rs.socket.on('set_dead', function(data){
-        console.log('you are dead');
-    })
+        console.log('you ded');
+    });
 
     sc.StartCheck = function(){
       if(1 < sc.chatcount && sc.chatcount < 5){
