@@ -98,6 +98,11 @@ function(sc, http, loc, rs, r) {
         sc.$apply();
     });
 
+    rs.socket.on('game_over', function(data){
+        sc.gameover = data.end
+        sc.gameend = true
+    })
+
     sc.dayVote = function(name){
         if(name === undefined){
             return;

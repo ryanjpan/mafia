@@ -68,6 +68,29 @@ module.exports = function(io, socket, rooms){
         return true;
     }
 
+    function gameEnd(roomId){
+        var room = rooms[roomId]
+        var users = rooms[roomId].users
+        if(room.aliveList.Mafia > (Math.ceiling(room.numUsersAlive/2))){
+            console.log('Mafia Won')
+            var endMSG = 'GAME OVER --- MAFIA has Won!'
+            for(var i = 0; i < users.length; i++){
+                if(io.sockets.connected[users[i].socketID]){
+                    io.sockets.connected[users[i].socketID].emit('game_over', {end: endMSG});
+                }
+            }
+        }
+        else if(room.aliveList.Mafia == 0){
+            console.log('Village Won')
+            var endMSG = 'GAME OVER --- CITIZENS have Won!'
+            for(var i = 0; i < users.length; i++){
+                if(io.sockets.connected[users[i].socketID]){
+                    io.sockets.connected[users[i].socketID].emit('game_over', {end: endMSG});
+                }
+            }
+        }
+    }
+
     socket.on('day_vote', function(data){
         var vote = rooms[data.roomId].vote;
 
@@ -114,6 +137,8 @@ module.exports = function(io, socket, rooms){
                 var deadList = rooms[data.roomId].deadList
                 aliveList[users[index].role] -= 1
                 deadList[users[index].role] += 1
+
+                gameEnd(data.roomId)
 
                 for(var i=0; i < users.length; i++){
                     if(io.sockets.connected[users[i].socketID]){
