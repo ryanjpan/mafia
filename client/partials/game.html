@@ -26,7 +26,7 @@
     </div>
     <form ng-submit="send_message()">
         <input type="text" ng-model="message">
-        <input type="submit" value="Send">
+        <input type="submit" value="Send" ng-disabled="!daytime || dead">
     </form>
 </div>
 
@@ -36,7 +36,7 @@
         <select ng-model="voteOption" ng-options="player for player in players">
           <option value="">--Select--</option>
         </select>
-        <input type="submit" name="" value="Vote to Execute" data-ng-disabled='votecast'>
+        <input type="submit" name="" value="Vote to Execute" data-ng-disabled='votecast || dead'>
     </form>
     <textarea id="votebox" name="textbox" ng-model="votebox" rows="8" scroll-glue disabled></textarea>
 </div>
