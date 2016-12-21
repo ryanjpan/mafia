@@ -12,17 +12,17 @@
     </div>
     <div id="alive">
         <p>-----Alive-----</p>
-        <p>Mafia: {{allroles['allroles']['Mafia']}}</p>
-        <p>Cops: {{allroles['allroles']['Cop']}}</p>
-        <p>Angel: {{allroles['allroles']['Angel']}}</p>
-        <p>Civilians: {{allroles['allroles']['Civilian']}}</p>
+        <p>Mafia: {{allroles['Mafia']}}</p>
+        <p>Cops: {{allroles['Cop']}}</p>
+        <p>Angel: {{allroles['Angel']}}</p>
+        <p>Civilians: {{allroles['Civilian']}}</p>
     </div>
     <div id="dead">
         <p>-----Dead-----</p>
-        <p>Mafia: {{allroles['allroles']['Mafia']}}</p>
-        <p>Cops: {{allroles['allroles']['Cop']}}</p>
-        <p>Angel: {{allroles['allroles']['Angel']}}</p>
-        <p>Civilians: {{allroles['allroles']['Civilian']}}</p>
+        <p>Mafia: {{deadroles['Mafia']}}</p>
+        <p>Cops: {{deadroles['Cop']}}</p>
+        <p>Angel: {{deadroles['Angel']}}</p>
+        <p>Civilians: {{deadroles['Civilian']}}</p>
     </div>
     <form ng-submit="send_message()">
         <input type="text" ng-model="message">
@@ -53,11 +53,11 @@
 <div id='roles' ng-if='showstart'>
     <button ng-click='start()' ng-disabled="StartCheck()">Start Game</button>
 </div>
-<div>
+<!-- <div>
     Your Role: {{role.role}}
     <p>All Roles:
     <p>Mafia: {{allroles['allroles']['Mafia']}}</p>
     <p>Cops: {{allroles['allroles']['Cop']}}</p>
     <p>Angel: {{allroles['allroles']['Angel']}}</p>
     <p>Civilians: {{allroles['allroles']['Civilian']}}</p>
-</div>
+</div> -->
