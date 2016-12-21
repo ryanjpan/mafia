@@ -85,14 +85,12 @@ module.exports = function(io, socket, rooms){
                 //update Alive and Dead List
                 var aliveList = rooms[data.roomId].aliveList
                 var deadList = rooms[data.roomId].deadList
-                console.log(aliveList)
                 aliveList[users[index].role] -= 1 
-                console.log(aliveList)
                 deadList[users[index].role] += 1
 
                 for(var i=0; i < users.length; i++){
                     if(io.sockets.connected[users[i].socketID]){
-                        io.sockets.connected[users[i].socketID].emit('executed', {user: executed, role: users[i].role});
+                        io.sockets.connected[users[i].socketID].emit('executed', {user: executed, role: users[index].role});
                     }
                 }
 

@@ -53,7 +53,15 @@ function(sc, http, loc, rs, r) {
 
     rs.socket.on('update_roles', function(data){
         sc.role = data.role;
-        console.log(sc.role);
+        var image = {
+            Civilian: 'citizen1',
+            Mafia: 'mafia1',
+            Cop: 'cop',
+            Angel: 'doctor',
+        }
+        console.log(data.role)
+        sc.image = image[data.role]
+        console.log(sc.image)
         sc.$apply();
     });
 
@@ -91,6 +99,8 @@ function(sc, http, loc, rs, r) {
         sc.showexecuted = true;
         console.log(data.executed, 'was executed');
         sc.executed = data.user;
+        console.log(data)
+        console.log(data.role)
         sc.executedrole = data.role;
         sc.$apply();
     });
