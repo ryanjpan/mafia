@@ -1,5 +1,6 @@
 module.exports = function(io, socket, rooms){
-    function emitAlive(roomId){
+    function emitAliveDead(roomId){
+        //CHANGE TO EMIT ALIVE AND DEAD
         var room = rooms[roomId];
         var users = room.users;
         var players = [];
@@ -10,13 +11,13 @@ module.exports = function(io, socket, rooms){
         }
         for(var i=0; i < users.length; i++){
             if(io.sockets.connected[users[i].socketID]){
-                io.sockets.connected[users[i].socketID].emit('players_sent', {players: players});
+                io.sockets.connected[users[i].socketID].emit('players_sent', {players: players, aliveList: rooms[roomId].aliveList, deadList: rooms[roomId].deadList});
             }
         }
     }
 
     socket.on('start_game', function(data){
-        room = rooms[data.roomId];
+        var room = rooms[data.roomId];
 	    var Rulebook = {
 	            1:['Mafia'],
 	            5:['Mafia', 'Angel', 'Civilian', 'Civilian', 'Civilian'],
@@ -56,16 +57,20 @@ module.exports = function(io, socket, rooms){
         room.started = true;
         room.vote = {};
 
-        emitAlive(data.roomId);
         for (var x=0; x<users.length;x++){
             if(io.sockets.connected[users[x].socketID]){
                 io.sockets.connected[users[x].socketID].emit('game_start', {});
             }
 	    }
 
-	    console.log(users);
+	    room['deadList'] = {
+	    	Mafia: 0,
+	    	Cop: 0,
+	    	Angel: 0,
+	    	Civilian: 0,
+	    }
 
-	    var allroles = {
+	    room['aliveList'] = {
 	    	Mafia: 0,
 	    	Cop: 0,
 	    	Angel: 0,
@@ -73,15 +78,9 @@ module.exports = function(io, socket, rooms){
 	    }
 
 	    for(var i=0;i<users.length;i++){
-	    	allroles[users[i].role] += 1
+	    	room['aliveList'][users[i].role] += 1
 	    }
 
-	    for (var i=0; i < users.length; i++){
-            if(io.sockets.connected[users[i].socketID]){
-                io.sockets.connected[users[i].socketID].emit('all_roles', {allroles: allroles});
-            }
-        }
-
-        console.log(allroles)
+        emitAliveDead(data.roomId);
     })
 }

@@ -11,7 +11,7 @@ module.exports = function(io, socket, rooms){
         }
         for(var i=0; i < users.length; i++){
             if(io.sockets.connected[users[i].socketID]){
-                io.sockets.connected[users[i].socketID].emit('players_sent', {players: players, alive: {}, dead:{}});
+                io.sockets.connected[users[i].socketID].emit('players_sent', {players: players, aliveList: rooms[roomId].aliveList, deadList: rooms[roomId].deadList});
             }
         }
     }
@@ -83,15 +83,16 @@ module.exports = function(io, socket, rooms){
                 }
 
                 //update Alive and Dead List
-                var aliveList = data.allroles
-                var deadList = data.deadroles
+                var aliveList = rooms[data.roomId].aliveList
+                var deadList = rooms[data.roomId].deadList
+                console.log(aliveList)
                 aliveList[users[index].role] -= 1 
                 console.log(aliveList)
                 deadList[users[index].role] += 1
 
                 for(var i=0; i < users.length; i++){
                     if(io.sockets.connected[users[i].socketID]){
-                        io.sockets.connected[users[i].socketID].emit('executed', {user: executed, role: users[i].role, aliveList: aliveList, deadList: deadList});
+                        io.sockets.connected[users[i].socketID].emit('executed', {user: executed, role: users[i].role});
                     }
                 }
 
