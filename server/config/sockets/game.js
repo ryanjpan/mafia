@@ -1,5 +1,6 @@
 module.exports = function(io, socket, rooms){
     function emitAlive(roomId){
+        //CHANGE TO EMIT ALIVE AND DEAD
         var room = rooms[roomId];
         var users = room.users;
         var players = [];
@@ -10,11 +11,10 @@ module.exports = function(io, socket, rooms){
         }
         for(var i=0; i < users.length; i++){
             if(io.sockets.connected[users[i].socketID]){
-                io.sockets.connected[users[i].socketID].emit('players_sent', {players: players});
+                io.sockets.connected[users[i].socketID].emit('players_sent', {players: players, alive: {}, dead:{}});
             }
         }
     }
-
 
     function tally(vote){
         var executed = ""
@@ -42,11 +42,11 @@ module.exports = function(io, socket, rooms){
     }
 
     function changeToNight(roomId){
-        //change to night
+        console.('not implemented: change to night');
     }
 
     socket.on('day_vote', function(data){
-        var vote = rooms[roomId].vote;
+        var vote = rooms[data.roomId].vote;
 
         if(rooms[data.roomId].numVoted){
             rooms[data.roomId].numVoted++;
@@ -57,29 +57,16 @@ module.exports = function(io, socket, rooms){
         var users = rooms[data.roomId].users
         if(vote[data['votedfor']]){
             vote[data['votedfor']] += 1
-            console.log(vote)
         }
         else{
             vote[data['votedfor']] = 1
-            console.log(vote)
         }
-<<<<<<< HEAD
-        votecount += 1
-=======
 
->>>>>>> b01f8293e51cf184a96621d2b151e63b9e8705f4
-        console.log(data['user'])
-        console.log(data['votedfor'])
         for(var i=0; i < users.length; i++){
             if(io.sockets.connected[users[i].socketID]){
                 io.sockets.connected[users[i].socketID].emit('vote_cast', {user: data['user'], vote: data['votedfor'] });
             }
         }
-<<<<<<< HEAD
-        
-    })
-    
-=======
 
         if(rooms[data.roomId].numVoted === rooms[data.roomId].numUsersAlive){
             var executed = tally(vote);
@@ -105,11 +92,11 @@ module.exports = function(io, socket, rooms){
                     users[index].alive = false;
                     io.sockets.connected[users[index].socketID].emit('set_dead', {});
                 }
+                emitAlive();
                 changeToNight(data.roomId);
             }
         }
 
     }); // end day vote
 
->>>>>>> b01f8293e51cf184a96621d2b151e63b9e8705f4
 }
