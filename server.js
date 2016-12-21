@@ -16,7 +16,7 @@ var routes = require('./server/config/routes.js');
 routes(app);
 
 var server = app.listen( port, function() {
-  console.log( ` full mean server running on port ${ port }` );
+  console.log( ` mafia server running on port ${ port }` );
 });
 
 require('./server/config/socket.js')(server);
