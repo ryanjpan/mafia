@@ -151,10 +151,21 @@ function(sc, http, loc, rs, r) {
             sc.votecast = true;
         }
         console.log(vote);
+        rs.socket.emit('night_vote', {user: rs.user, votedfor: vote, role: sc.role, roomId: rs.room});
     }
 
     rs.socket.on('mafia_votedone', function(data){
         sc.votecast = true;
+        sc.$apply();
+    })
+
+    rs.socket.on('night_event', function(data){
+        if(data.status === 'saved'){
+            sc.nightevent = data.user + ' was attacked in his home last night but the doctor saved him';
+        }
+        else{
+            sc.nightevent = data.user + ' was found dead in his home last night, (s)he was a ' + data.role;
+        }
         sc.$apply();
     })
 }]);
