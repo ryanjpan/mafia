@@ -3,6 +3,7 @@ function(sc, http, loc, rs, r) {
 
     sc.showstart = true
     sc.chatbox = "";
+    sc.started = false;
 
     if(!rs.user){
         loc.url('/');
@@ -13,6 +14,10 @@ function(sc, http, loc, rs, r) {
         rs.socket.emit('receive_users', {roomId: rs.room});
     }
     joinInit();
+
+    //--------------------
+    //END INITIALIZATIONS
+    //-------------------
 
     function changeToDay(){
         sc.daytime = true;
@@ -63,6 +68,7 @@ function(sc, http, loc, rs, r) {
     })
 
     rs.socket.on('game_start', function(data){
+        sc.started = true;
         changeToDay();
         sc.$apply();
     })

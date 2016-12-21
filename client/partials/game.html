@@ -1,15 +1,39 @@
 <div>
-    <textarea name="textbox" ng-model="chatbox" rows="8" cols="80" scroll-glue disabled></textarea>
+    <h1 ng-if="daytime">It is now day time!</h1>
+    <h1 ng-if="!daytime && started">It is now night time!</h1>
+    <div id="textbox">
+        <h3>Chat Box</h3>
+        <textarea name="textbox" ng-model="chatbox" rows="8" cols="80" scroll-glue disabled></textarea>
+    </div>
     <div id="userList">
         <h3>Users</h3>
         <textarea id="users" ng-model=users rows="8" disabled>
         </textarea>
+    </div>
+    <div id="alive">
+        <p>-----Alive-----</p>
+        <p>Mafia: {{allroles['allroles']['Mafia']}}</p>
+        <p>Cops: {{allroles['allroles']['Cop']}}</p>
+        <p>Angel: {{allroles['allroles']['Angel']}}</p>
+        <p>Civilians: {{allroles['allroles']['Civilian']}}</p>
+    </div>
+    <div id="dead">
+        <p>-----Dead-----</p>
+        <p>Mafia: {{allroles['allroles']['Mafia']}}</p>
+        <p>Cops: {{allroles['allroles']['Cop']}}</p>
+        <p>Angel: {{allroles['allroles']['Angel']}}</p>
+        <p>Civilians: {{allroles['allroles']['Civilian']}}</p>
     </div>
     <form ng-submit="send_message()">
         <input type="text" ng-model="message">
         <input type="submit" value="Send">
     </form>
 </div>
+
+<div id='start' ng-if='showstart'>
+    <button ng-click='start()'>Start Game</button>
+</div>
+
 
 <div ng-if="daytime">
     <form ng-submit="dayVote(voteOption)">
@@ -20,6 +44,7 @@
     </form>
     <textarea id="votebox" name="textbox" ng-model="votebox" rows="8" scroll-glue disabled></textarea>
 </div>
+
 <div ng-if="!daytime && player.role == 'Mafia'">
   <form ng-submit="nightVote(voteOption)">
       <select ng-model="voteOption" ng-options="player for player in players">
