@@ -42,7 +42,7 @@ module.exports = function(io, socket, rooms){
     }
 
     function changeToNight(roomId){
-        console.('not implemented: change to night');
+        console.log('not implemented: change to night');
     }
 
     socket.on('day_vote', function(data){
