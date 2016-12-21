@@ -30,11 +30,6 @@
     </form>
 </div>
 
-<div id='start' ng-if='showstart'>
-    <button ng-click='start()'>Start Game</button>
-</div>
-
-
 <div ng-if="daytime">
     <h2 id="execution" ng-if="showexecuted">{{executed}} has been executed, (s)he was a {{executedrole}}</h2>
     <form ng-submit="dayVote(voteOption)">
