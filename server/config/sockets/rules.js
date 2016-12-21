@@ -1,6 +1,11 @@
 module.exports = function(io, socket, rooms){
+<<<<<<< HEAD
 
     function emitAlive(roomId){
+=======
+    function emitAliveDead(roomId){
+        //CHANGE TO EMIT ALIVE AND DEAD
+>>>>>>> 14c2ace8359d95222b45a8053373b068998bbce9
         var room = rooms[roomId];
         var users = room.users;
         var players = [];
@@ -11,25 +16,25 @@ module.exports = function(io, socket, rooms){
         }
         for(var i=0; i < users.length; i++){
             if(io.sockets.connected[users[i].socketID]){
-                io.sockets.connected[users[i].socketID].emit('players_sent', {players: players});
+                io.sockets.connected[users[i].socketID].emit('players_sent', {players: players, aliveList: rooms[roomId].aliveList, deadList: rooms[roomId].deadList});
             }
         }
     }
 
     socket.on('start_game', function(data){
 
-        room = rooms[data.roomId];
-  	    var Rulebook = {
-  	            1:['Mafia'],
-  	            5:['Mafia', 'Angel', 'Civilian', 'Civilian', 'Civilian'],
-  	            6:['Mafia', 'Angel', 'Cop', 'Civilian', 'Civilian', 'Civilian'],
-  	            7:['Mafia', 'Mafia', 'Angel', 'Cop', 'Civilian', 'Civilian', 'Civilian'],
-  	            8:['Mafia', 'Mafia', 'Angel', 'Cop', 'Civilian', 'Civilian', 'Civilian', 'Civilian'],
-  	            9:['Mafia', 'Mafia', 'Angel', 'Cop', 'Civilian', 'Civilian', 'Civilian', 'Civilian', 'Civilian'],
-  	            10:['Mafia', 'Mafia', 'Mafia', 'Angel', 'Cop', 'Civilian', 'Civilian', 'Civilian', 'Civilian', 'Civilian'],
-  	            11:['Mafia', 'Mafia', 'Mafia', 'Angel', 'Cop', 'Civilian', 'Civilian', 'Civilian', 'Civilian', 'Civilian', 'Civilian'],
-  	            12:['Mafia', 'Mafia', 'Mafia', 'Angel', 'Cop', 'Civilian', 'Civilian', 'Civilian', 'Civilian', 'Civilian', 'Civilian', 'Civilian'],
-  	    }
+      var room = rooms[data.roomId];
+	    var Rulebook = {
+	            1:['Mafia'],
+	            5:['Mafia', 'Angel', 'Civilian', 'Civilian', 'Civilian'],
+	            6:['Mafia', 'Angel', 'Cop', 'Civilian', 'Civilian', 'Civilian'],
+	            7:['Mafia', 'Mafia', 'Angel', 'Cop', 'Civilian', 'Civilian', 'Civilian'],
+	            8:['Mafia', 'Mafia', 'Angel', 'Cop', 'Civilian', 'Civilian', 'Civilian', 'Civilian'],
+	            9:['Mafia', 'Mafia', 'Angel', 'Cop', 'Civilian', 'Civilian', 'Civilian', 'Civilian', 'Civilian'],
+	            10:['Mafia', 'Mafia', 'Mafia', 'Angel', 'Cop', 'Civilian', 'Civilian', 'Civilian', 'Civilian', 'Civilian'],
+	            11:['Mafia', 'Mafia', 'Mafia', 'Angel', 'Cop', 'Civilian', 'Civilian', 'Civilian', 'Civilian', 'Civilian', 'Civilian'],
+	            12:['Mafia', 'Mafia', 'Mafia', 'Angel', 'Cop', 'Civilian', 'Civilian', 'Civilian', 'Civilian', 'Civilian', 'Civilian', 'Civilian'],
+	    }
         var numRoles = {
             1: {'Mafia': 1},
             5: {'Mafia': 1, 'Angel': 1, 'Civilian': 3},
@@ -58,6 +63,7 @@ module.exports = function(io, socket, rooms){
           room.started = true;
           room.vote = {};
 
+<<<<<<< HEAD
           emitAlive(data.roomId);
           for (var x=0; x<users.length;x++){
               if(io.sockets.connected[users[x].socketID]){
@@ -86,4 +92,32 @@ module.exports = function(io, socket, rooms){
 
           console.log(allroles)
       })
+=======
+        for (var x=0; x<users.length;x++){
+            if(io.sockets.connected[users[x].socketID]){
+                io.sockets.connected[users[x].socketID].emit('game_start', {});
+            }
+	    }
+
+	    room['deadList'] = {
+	    	Mafia: 0,
+	    	Cop: 0,
+	    	Angel: 0,
+	    	Civilian: 0,
+	    }
+
+	    room['aliveList'] = {
+	    	Mafia: 0,
+	    	Cop: 0,
+	    	Angel: 0,
+	    	Civilian: 0,
+	    }
+
+	    for(var i=0;i<users.length;i++){
+	    	room['aliveList'][users[i].role] += 1
+	    }
+
+        emitAliveDead(data.roomId);
+    })
+>>>>>>> 14c2ace8359d95222b45a8053373b068998bbce9
 }

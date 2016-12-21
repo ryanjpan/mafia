@@ -55,21 +55,13 @@ function(sc, http, loc, rs, r) {
         sc.role = data;
         sc.$apply();
     });
-    rs.socket.on('all_roles', function(data){
-        sc.allroles = data['allroles']
-        sc.deadroles = {
-            Mafia: 0,
-            Cop: 0,
-            Angel: 0,
-            Civilian: 0,
-        }
-        console.log(data)
-        sc.$apply()
-    });
 
     rs.socket.on('players_sent', function(data){
         console.log(sc.players);
         sc.players = data.players;
+        sc.allroles = data.aliveList
+        console.log(data.aliveList)
+        sc.deadroles = data.deadList
         sc.$apply();
     });
 
@@ -99,10 +91,6 @@ function(sc, http, loc, rs, r) {
         console.log(data.executed, 'was executed');
         sc.executed = data.user;
         sc.executedrole = data.role;
-        // console.log(data)
-        sc.allroles = data.aliveList
-        // console.log(sc.allroles)
-        // sc.deadroles = data.deadList
         sc.$apply();
     });
 
