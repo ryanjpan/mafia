@@ -1,11 +1,7 @@
 module.exports = function(io, socket, rooms){
-<<<<<<< HEAD
 
-    function emitAlive(roomId){
-=======
     function emitAliveDead(roomId){
         //CHANGE TO EMIT ALIVE AND DEAD
->>>>>>> 14c2ace8359d95222b45a8053373b068998bbce9
         var room = rooms[roomId];
         var users = room.users;
         var players = [];
@@ -63,36 +59,6 @@ module.exports = function(io, socket, rooms){
           room.started = true;
           room.vote = {};
 
-<<<<<<< HEAD
-          emitAlive(data.roomId);
-          for (var x=0; x<users.length;x++){
-              if(io.sockets.connected[users[x].socketID]){
-                  io.sockets.connected[users[x].socketID].emit('game_start', {});
-              }
-  	    }
-
-  	    console.log(users);
-
-  	    var allroles = {
-  	    	Mafia: 0,
-  	    	Cop: 0,
-  	    	Angel: 0,
-  	    	Civilian: 0,
-  	    }
-
-  	    for(var i=0;i<users.length;i++){
-  	    	allroles[users[i].role] += 1
-  	    }
-
-  	    for (var i=0; i < users.length; i++){
-              if(io.sockets.connected[users[i].socketID]){
-                  io.sockets.connected[users[i].socketID].emit('all_roles', {allroles: allroles});
-              }
-          }
-
-          console.log(allroles)
-      })
-=======
         for (var x=0; x<users.length;x++){
             if(io.sockets.connected[users[x].socketID]){
                 io.sockets.connected[users[x].socketID].emit('game_start', {});
@@ -119,5 +85,4 @@ module.exports = function(io, socket, rooms){
 
         emitAliveDead(data.roomId);
     })
->>>>>>> 14c2ace8359d95222b45a8053373b068998bbce9
 }
