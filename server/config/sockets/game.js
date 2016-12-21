@@ -1,5 +1,5 @@
 module.exports = function(io, socket, rooms){
-    function emitAlive(roomId){
+    function emitAliveDead(roomId){
         //CHANGE TO EMIT ALIVE AND DEAD
         var room = rooms[roomId];
         var users = room.users;
@@ -38,7 +38,7 @@ module.exports = function(io, socket, rooms){
 
     function changeToDay(roomId){
         rooms[roomId].vote = {};
-        emitAlive(roomId);
+        emitAliveDead(roomId);
     }
 
     function changeToNight(roomId){
@@ -82,9 +82,16 @@ module.exports = function(io, socket, rooms){
                     }
                 }
 
+                //update Alive and Dead List
+                var aliveList = data.allroles
+                var deadList = data.deadroles
+                aliveList[users[index].role] -= 1 
+                console.log(aliveList)
+                deadList[users[index].role] += 1
+
                 for(var i=0; i < users.length; i++){
                     if(io.sockets.connected[users[i].socketID]){
-                        io.sockets.connected[users[i].socketID].emit('executed', {user: executed, role: users[i].role});
+                        io.sockets.connected[users[i].socketID].emit('executed', {user: executed, role: users[i].role, aliveList: aliveList, deadList: deadList});
                     }
                 }
 
@@ -92,7 +99,7 @@ module.exports = function(io, socket, rooms){
                     users[index].alive = false;
                     io.sockets.connected[users[index].socketID].emit('set_dead', {});
                 }
-                emitAlive(data.roomId);
+                emitAliveDead(data.roomId);
                 changeToNight(data.roomId);
             }
         }

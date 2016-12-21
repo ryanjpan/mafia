@@ -56,7 +56,13 @@ function(sc, http, loc, rs, r) {
         sc.$apply();
     });
     rs.socket.on('all_roles', function(data){
-        sc.allroles = data
+        sc.allroles = data['allroles']
+        sc.deadroles = {
+            Mafia: 0,
+            Cop: 0,
+            Angel: 0,
+            Civilian: 0,
+        }
         console.log(data)
         sc.$apply()
     });
@@ -79,8 +85,8 @@ function(sc, http, loc, rs, r) {
         }
         sc.votecast = true;
         console.log('voted for', name);
-        rs.socket.emit('day_vote', {votedfor: name, roomId: rs.room, user: rs.user});
-    };
+        rs.socket.emit('day_vote', {votedfor: name, roomId: rs.room, user: rs.user, allroles: sc.allroles, deadroles: sc.deadroles});
+    }
 
     rs.socket.on('vote_cast', function(data){
         console.log(data)
@@ -93,6 +99,10 @@ function(sc, http, loc, rs, r) {
         console.log(data.executed, 'was executed');
         sc.executed = data.user;
         sc.executedrole = data.role;
+        console.log(data)
+        sc.allroles = data.aliveList
+        console.log(sc.allroles)
+        sc.deadroles = data.deadList
         sc.$apply();
     });
 
