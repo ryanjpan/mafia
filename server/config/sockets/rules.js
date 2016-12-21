@@ -1,8 +1,8 @@
 module.exports = function(io, socket, rooms){
     function emitAlive(roomId){
-        room = rooms[roomId];
-        users = room.users;
-        players = [];
+        var room = rooms[roomId];
+        var users = room.users;
+        var players = [];
         for(var i=0; i < users.length; i++){
             if(users[i].alive){
                 players.push(users[i].name);
@@ -53,6 +53,8 @@ module.exports = function(io, socket, rooms){
 	    }
         room.numUsersAlive = room.users.length;
         room.numRoles = numRoles[users.length];
+        room.vote = {};
+
         emitAlive(data.roomId);
         for (var x=0; x<users.length;x++){
             if(io.sockets.connected[users[x].socketID]){
