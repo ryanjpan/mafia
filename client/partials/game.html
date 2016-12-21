@@ -58,3 +58,8 @@
     <h2>Your Role</h2>
     <img src="./images/{{image}}.png">
 </div>
+
+<div ng-if='mafia'>
+    <p>-----Mafia-----</p>
+    <p ng-repeat='mafia in mafiaList'>{{mafia}} is a Mafia</p>
+</div>

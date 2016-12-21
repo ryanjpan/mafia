@@ -59,17 +59,18 @@ function(sc, http, loc, rs, r) {
             Cop: 'cop',
             Angel: 'doctor',
         }
-        console.log(data.role)
         sc.image = image[data.role]
-        console.log(sc.image)
         sc.$apply();
     });
+    rs.socket.on('mafia_list', function(data){
+        sc.mafiaList = data.mafiaList
+        sc.mafia = true
+        sc.$apply();
+    })
 
     rs.socket.on('players_sent', function(data){
-        console.log(sc.players);
         sc.players = data.players;
         sc.allroles = data.aliveList
-        console.log(data.aliveList)
         sc.deadroles = data.deadList
         sc.$apply();
     });
@@ -100,8 +101,6 @@ function(sc, http, loc, rs, r) {
         sc.showexecuted = true;
         console.log(data.executed, 'was executed');
         sc.executed = data.user;
-        console.log(data)
-        console.log(data.role)
         sc.executedrole = data.role;
         sc.$apply();
     });

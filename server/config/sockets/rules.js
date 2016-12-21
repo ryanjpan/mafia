@@ -47,17 +47,31 @@ module.exports = function(io, socket, rooms){
 
   	    var users = room.users;
   	    var roles = Rulebook[users.length];
+
+  	    room['mafiaList'] = []
+
   	    for (var x=0; x<users.length;x++){
-              users[x].role = roles[x];
-              users[x].alive = true;
-              if(io.sockets.connected[users[x].socketID]){
-                  io.sockets.connected[users[x].socketID].emit('update_roles', {role: users[x].role});
-              }
+			users[x].role = roles[x];
+			users[x].alive = true;
+			if(roles[x]=='Mafia'){
+				room['mafiaList'].push(users[x].name)
+			}
+			if(io.sockets.connected[users[x].socketID]){
+				io.sockets.connected[users[x].socketID].emit('update_roles', {role: users[x].role});
+			}
   	    }
-          room.numUsersAlive = room.users.length;
-          room.numRoles = numRoles[users.length];
-          room.started = true;
-          room.vote = {};
+  	    
+  	    for (var x=0; x<users.length;x++){
+            if(io.sockets.connected[users[x].socketID]){
+            	if(roles[x]=='Mafia'){
+                	io.sockets.connected[users[x].socketID].emit('mafia_list', {mafiaList: room['mafiaList']});
+            	}
+            }
+	    }
+			room.numUsersAlive = room.users.length;
+			room.numRoles = numRoles[users.length];
+			room.started = true;
+			room.vote = {};
 
         for (var x=0; x<users.length;x++){
             if(io.sockets.connected[users[x].socketID]){
