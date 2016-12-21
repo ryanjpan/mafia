@@ -33,12 +33,13 @@ module.exports = function(io, socket, rooms){
         else{
             rooms[data.room] = {};
             rooms[data.room].users = [];
+            rooms[data.room].started = false;
             socket.emit('room_response', {valid: true});
         }
     });
 
     socket.on('join_room', function(data){
-        if(rooms[data.room]){
+        if(rooms[data.room] && !rooms[data.room].started){
             socket.emit('room_response', {valid: true});
         }
         else{

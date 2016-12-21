@@ -99,7 +99,6 @@ module.exports = function(io, socket, rooms){
                     users[index].alive = false;
                     io.sockets.connected[users[index].socketID].emit('set_dead', {});
                 }
-
                 emitAliveDead(data.roomId);
                 changeToNight(data.roomId);
             }
