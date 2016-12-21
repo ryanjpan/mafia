@@ -15,7 +15,7 @@ module.exports = function(io, socket, rooms){
         }
     }
 
-    var vote = {}
+    var votecount = 0
 
     socket.on('day_vote', function(data){
         var users = rooms[data.roomId].users
@@ -27,6 +27,7 @@ module.exports = function(io, socket, rooms){
             vote[data['votedfor']] = 1
             console.log(vote)
         }
+        votecount += 1
         console.log(data['user'])
         console.log(data['votedfor'])
         for(var i=0; i < users.length; i++){
@@ -34,6 +35,7 @@ module.exports = function(io, socket, rooms){
                 io.sockets.connected[users[i].socketID].emit('vote_cast', {user: data['user'], vote: data['votedfor'] });
             }
         }
+        
     })
     
 }
