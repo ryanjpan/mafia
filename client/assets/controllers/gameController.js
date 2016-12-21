@@ -99,10 +99,10 @@ function(sc, http, loc, rs, r) {
         console.log(data.executed, 'was executed');
         sc.executed = data.user;
         sc.executedrole = data.role;
-        console.log(data)
+        // console.log(data)
         sc.allroles = data.aliveList
-        console.log(sc.allroles)
-        sc.deadroles = data.deadList
+        // console.log(sc.allroles)
+        // sc.deadroles = data.deadList
         sc.$apply();
     });
 
