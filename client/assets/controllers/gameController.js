@@ -106,6 +106,7 @@ function(sc, http, loc, rs, r) {
     rs.socket.on('game_over', function(data){
         sc.gameover = data.end
         sc.gameend = true
+        sc.$apply();
     })
 
     sc.dayVote = function(name){

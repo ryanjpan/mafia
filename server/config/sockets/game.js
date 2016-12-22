@@ -45,6 +45,7 @@ module.exports = function(io, socket, rooms){
             }
         }
         rooms[roomId].vote = {}
+        rooms[roomId].numVoted = 0;
     }
 
     function changeToNight(roomId){
@@ -83,7 +84,7 @@ module.exports = function(io, socket, rooms){
     function gameEnd(roomId){
         var room = rooms[roomId]
         var users = rooms[roomId].users
-        if(room.aliveList.Mafia > (Math.ceil(room.numUsersAlive/2))){
+        if(room.aliveList.Mafia >= (Math.ceil(room.numUsersAlive/2))){
             console.log('Mafia Won')
             var endMSG = 'GAME OVER --- MAFIA has Won!'
             for(var i = 0; i < users.length; i++){
@@ -133,6 +134,9 @@ module.exports = function(io, socket, rooms){
             }
         }
 
+        console.log(rooms[data.roomId].numUsersAlive);
+        console.log(rooms[data.roomId].numVoted);
+
         if(rooms[data.roomId].numVoted === rooms[data.roomId].numUsersAlive){
             var executed = tally(vote);
             if (executed === ""){
@@ -144,6 +148,7 @@ module.exports = function(io, socket, rooms){
                 setTimeout(function(){ changeToNight(data.roomId); }, 5000);
             }
             else{ //kill the user who won the vote
+                rooms[data.roomId].numUsersAlive--;
                 var index;
                 for(var i=0; i < users.length; i++){
                     if(users[i].name === executed){
@@ -154,8 +159,8 @@ module.exports = function(io, socket, rooms){
                 //update Alive and Dead List
                 var aliveList = rooms[data.roomId].aliveList;
                 var deadList = rooms[data.roomId].deadList;
-                aliveList[users[index].role] -= 1
-                deadList[users[index].role] += 1
+                aliveList[users[index].role] -= 1;
+                deadList[users[index].role] += 1;
 
                 for(var i=0; i < users.length; i++){
                     if(io.sockets.connected[users[i].socketID]){
