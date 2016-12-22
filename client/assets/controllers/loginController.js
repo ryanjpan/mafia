@@ -26,7 +26,7 @@ function(sc, http, loc, rs, r) {
     }
 
     sc.joinRoom = function(){
-       rs.socket.emit('join_room', {room: sc.roomId});
+       rs.socket.emit('join_room', {room: sc.roomId, user:sc.userName});
     }
 
     rs.socket.on('room_response', function(data){
