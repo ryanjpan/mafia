@@ -38,6 +38,7 @@ module.exports = function(io, socket, rooms){
 
     function changeToDay(roomId){
         rooms[roomId].vote = {};
+        var users = rooms[roomId].users;
         for(var i=0; i < users.length; i++){
             if(io.sockets.connected[users[i].socketID]){
                 io.sockets.connected[users[i].socketID].emit('set_daytime', {});
