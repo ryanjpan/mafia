@@ -38,8 +38,11 @@ module.exports = function(io, socket, rooms){
 
     function changeToDay(roomId){
         rooms[roomId].vote = {};
-        emitAliveDead(roomId);
-        console.log('change to day, not finished yet');
+        for(var i=0; i < users.length; i++){
+            if(io.sockets.connected[users[i].socketID]){
+                io.sockets.connected[users[i].socketID].emit('set_daytime', {});
+            }
+        }
     }
 
     function changeToNight(roomId){
@@ -165,6 +168,7 @@ module.exports = function(io, socket, rooms){
     }); // end day vote
 
     socket.on('night_vote', function(data){
+        console.log(data);
         var room = rooms[data.roomId];
         if(data.role == 'Mafia'){
             var users = room.users;
@@ -207,6 +211,7 @@ module.exports = function(io, socket, rooms){
                 for(var i=0; i < users.length; i++){
                     if(users[i].name === room.mafiaexecute){
                         role = users[i].role;
+                        users[i].alive = false;
                         index = i;
                     }
                 }
@@ -214,6 +219,10 @@ module.exports = function(io, socket, rooms){
                     if(io.sockets.connected[users[i].socketID]){
                         io.sockets.connected[users[i].socketID].emit('night_event', {user: room.mafiaexecute, status: 'died', role: role});
                     }
+                }
+
+                if(io.sockets.connected[users[index].socketID]){
+                    io.sockets.connected[users[index].socketID].emit('set_dead', {});
                 }
 
                 var aliveList = rooms[data.roomId].aliveList
