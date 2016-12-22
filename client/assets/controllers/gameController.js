@@ -14,7 +14,13 @@ function(sc, http, loc, rs, r) {
         return;
     }
 
+    rs.socket.on('boot', function(data){
+        loc.url('/');
+        sc.$apply();
+    })
+
     function joinInit(){
+        console.log('emitting receive');
         rs.socket.emit('receive_users', {roomId: rs.room});
     }
     joinInit();
@@ -182,7 +188,7 @@ function(sc, http, loc, rs, r) {
 
     rs.socket.on('mafia_votecast', function(data){
         if(sc.role === 'Mafia'){
-            sc.mafiabox += data.user + ' voted for ' + data.votedfor;
+            sc.mafiabox += data.user + ' voted for ' + data.vote + '\n';
         }
     })
 

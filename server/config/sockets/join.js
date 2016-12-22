@@ -22,6 +22,10 @@ module.exports = function(io, socket, rooms){
     }
 
     socket.on('receive_users', function(data){
+        if(!rooms[data.roomId]){
+            socket.emit('boot',{})
+            return;
+        }
         updateUsers(data.roomId);
     })
 

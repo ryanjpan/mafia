@@ -17,7 +17,7 @@ module.exports = function(io, socket, rooms){
     }
 
     function tally(vote){
-        var executed = ""
+        var executed = "";
         var tie = false;
         for(var i in vote){
             if(executed === "" || vote[i] > vote[executed]){
@@ -107,6 +107,10 @@ module.exports = function(io, socket, rooms){
     }
 
     socket.on('day_vote', function(data){
+        if(!rooms[data.roomId]){
+            socket.emit('boot',{})
+            return;
+        }
         var vote = rooms[data.roomId].vote;
 
         if(rooms[data.roomId].numVoted){
@@ -174,6 +178,10 @@ module.exports = function(io, socket, rooms){
     }); // end day vote
 
     socket.on('night_vote', function(data){
+        if(!rooms[data.roomId]){
+            socket.emit('boot',{})
+            return;
+        }
         console.log(data);
         var room = rooms[data.roomId];
         if(data.role == 'Mafia'){
@@ -213,6 +221,7 @@ module.exports = function(io, socket, rooms){
             }
             else{
                 //someone died
+                room.numUsersAlive--;
                 var role, index;
                 for(var i=0; i < users.length; i++){
                     if(users[i].name === room.mafiaexecute){
