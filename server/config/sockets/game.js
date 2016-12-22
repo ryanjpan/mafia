@@ -17,10 +17,10 @@ module.exports = function(io, socket, rooms){
     }
 
     function tally(vote){
-        var executed = ""
+        var executed;
         var tie = false;
         for(var i in vote){
-            if(executed === "" || vote[i] > vote[executed]){
+            if(executed === undefined || vote[i] > vote[executed]){
                 executed = i;
                 tie = false;
             }
@@ -38,8 +38,14 @@ module.exports = function(io, socket, rooms){
 
     function changeToDay(roomId){
         rooms[roomId].vote = {};
-        emitAliveDead(roomId);
-        console.log('change to day, not finished yet');
+        var users = rooms[roomId].users;
+        for(var i=0; i < users.length; i++){
+            if(io.sockets.connected[users[i].socketID]){
+                io.sockets.connected[users[i].socketID].emit('set_daytime', {});
+            }
+        }
+        rooms[roomId].vote = {}
+        rooms[roomId].numVoted = 0;
     }
 
     function changeToNight(roomId){
@@ -57,8 +63,9 @@ module.exports = function(io, socket, rooms){
     }
 
     function mafiaDoneVoting(roomId){
-        var voted;
+        var voted, count = 0;
         for(var key in rooms[roomId].mafiavote){
+            count++;
             if(voted === undefined){
                 voted = rooms[roomId].mafiavote[key];
             }
@@ -68,13 +75,16 @@ module.exports = function(io, socket, rooms){
                 }
             }
         }
+        if(count !== rooms[roomId].aliveList['Mafia']){
+            return false;
+        }
         return true;
     }
 
     function gameEnd(roomId){
         var room = rooms[roomId]
         var users = rooms[roomId].users
-        if(room.aliveList.Mafia > (Math.ceiling(room.numUsersAlive/2))){
+        if(room.aliveList.Mafia >= (Math.ceil(room.numUsersAlive/2))){
             console.log('Mafia Won')
             var endMSG = 'GAME OVER --- MAFIA has Won!'
             for(var i = 0; i < users.length; i++){
@@ -98,6 +108,10 @@ module.exports = function(io, socket, rooms){
     }
 
     socket.on('day_vote', function(data){
+        if(!rooms[data.roomId]){
+            socket.emit('boot',{})
+            return;
+        }
         var vote = rooms[data.roomId].vote;
 
         if(rooms[data.roomId].numVoted){
@@ -120,6 +134,9 @@ module.exports = function(io, socket, rooms){
             }
         }
 
+        console.log(rooms[data.roomId].numUsersAlive);
+        console.log(rooms[data.roomId].numVoted);
+
         if(rooms[data.roomId].numVoted === rooms[data.roomId].numUsersAlive){
             var executed = tally(vote);
             if (executed === ""){
@@ -131,6 +148,7 @@ module.exports = function(io, socket, rooms){
                 setTimeout(function(){ changeToNight(data.roomId); }, 5000);
             }
             else{ //kill the user who won the vote
+                rooms[data.roomId].numUsersAlive--;
                 var index;
                 for(var i=0; i < users.length; i++){
                     if(users[i].name === executed){
@@ -141,8 +159,8 @@ module.exports = function(io, socket, rooms){
                 //update Alive and Dead List
                 var aliveList = rooms[data.roomId].aliveList;
                 var deadList = rooms[data.roomId].deadList;
-                aliveList[users[index].role] -= 1
-                deadList[users[index].role] += 1
+                aliveList[users[index].role] -= 1;
+                deadList[users[index].role] += 1;
 
                 for(var i=0; i < users.length; i++){
                     if(io.sockets.connected[users[i].socketID]){
@@ -165,6 +183,11 @@ module.exports = function(io, socket, rooms){
     }); // end day vote
 
     socket.on('night_vote', function(data){
+        if(!rooms[data.roomId]){
+            socket.emit('boot',{})
+            return;
+        }
+        console.log(data);
         var room = rooms[data.roomId];
         if(data.role == 'Mafia'){
             var users = room.users;
@@ -188,7 +211,28 @@ module.exports = function(io, socket, rooms){
             room.saved = data.votedfor;
         }
         else if(data.role == 'Cop'){
+            var users = room.users;
             room.investigated = data.votedfor;
+            var cind, role;
+            for(var i=0; i < users.length; i++){
+                if(users[i].role === 'Cop'){
+                    cind = i;
+                }
+                else if (users[i].name === room.investigated){
+                    role = users[i].role;
+                }
+            }
+            if(io.sockets.connected[users[cind].socketID]){
+                var result;
+                if(role === 'Mafia'){
+                    result = ', (s)he is a Mafia';
+                }
+                else{
+                    result = ', (s)he is not a Mafia';
+                }
+                io.sockets.connected[users[cind].socketID].emit('investigated', {user: room.investigated, result: result});
+            }
+
         }
 
         if(room.mafiaexecute && (room.aliveList['Angel'] === 0 || room.saved) && (room.aliveList['Cop'] === 0 || room.investigated)){
@@ -203,10 +247,12 @@ module.exports = function(io, socket, rooms){
             }
             else{
                 //someone died
+                room.numUsersAlive--;
                 var role, index;
                 for(var i=0; i < users.length; i++){
                     if(users[i].name === room.mafiaexecute){
                         role = users[i].role;
+                        users[i].alive = false;
                         index = i;
                     }
                 }
@@ -214,6 +260,10 @@ module.exports = function(io, socket, rooms){
                     if(io.sockets.connected[users[i].socketID]){
                         io.sockets.connected[users[i].socketID].emit('night_event', {user: room.mafiaexecute, status: 'died', role: role});
                     }
+                }
+
+                if(io.sockets.connected[users[index].socketID]){
+                    io.sockets.connected[users[index].socketID].emit('set_dead', {});
                 }
 
                 var aliveList = rooms[data.roomId].aliveList

@@ -1,7 +1,6 @@
 app.controller('gameController', ['$scope', '$http', '$location', '$rootScope', '$route',
 function(sc, http, loc, rs, r) {
 
-    sc.showstart = true
     sc.chatbox = "";
     sc.started = false;
     sc.action = {
@@ -15,7 +14,13 @@ function(sc, http, loc, rs, r) {
         return;
     }
 
+    rs.socket.on('boot', function(data){
+        loc.url('/');
+        sc.$apply();
+    })
+
     function joinInit(){
+        console.log('emitting receive');
         rs.socket.emit('receive_users', {roomId: rs.room});
     }
     joinInit();
@@ -35,8 +40,12 @@ function(sc, http, loc, rs, r) {
     function changeToNight(){
         sc.votecast = false;
         sc.daytime = false;
+        sc.nightevent = "";
         if(sc.role == 'Mafia'){
             sc.mafiabox = "";
+        }
+        if(sc.role == 'Cop'){
+            sc.investigateStr = "";
         }
     }
 
@@ -101,6 +110,7 @@ function(sc, http, loc, rs, r) {
     rs.socket.on('game_over', function(data){
         sc.gameover = data.end
         sc.gameend = true
+        sc.$apply();
     })
 
     sc.dayVote = function(name){
@@ -120,7 +130,6 @@ function(sc, http, loc, rs, r) {
 
     rs.socket.on('executed', function(data){
         sc.showexecuted = true;
-        console.log(data.executed, 'was executed');
         sc.executed = data.user;
         sc.executedrole = data.role;
         sc.$apply();
@@ -141,6 +150,11 @@ function(sc, http, loc, rs, r) {
         sc.$apply();
     })
 
+    rs.socket.on('set_daytime', function(data){
+        changeToDay();
+        sc.$apply();
+    })
+
     sc.StartCheck = function(){
       if(1 < sc.chatcount && sc.chatcount < 5){
         return true;
@@ -150,6 +164,10 @@ function(sc, http, loc, rs, r) {
     };
 
     sc.nightVote= function(vote){
+        if(vote === ""){
+            //at night must vote for someone
+            return;
+        }
         if(sc.role !== 'Mafia'){
             //if not mafia, can only vote once
             sc.votecast = true;
@@ -172,4 +190,17 @@ function(sc, http, loc, rs, r) {
         }
         sc.$apply();
     })
+
+    rs.socket.on('mafia_votecast', function(data){
+        if(sc.role === 'Mafia'){
+            sc.mafiabox += data.user + ' voted for ' + data.vote + '\n';
+        }
+        sc.$apply();
+    })
+
+    rs.socket.on('investigated', function(data){
+        sc.investigateStr = "You investigated " + data.user + data.result;
+        sc.$apply();
+    })
+
 }]);

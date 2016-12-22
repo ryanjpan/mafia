@@ -34,3 +34,18 @@ h1{
     width: 100px;
     height: 200px;
 }
+
+#role{
+    vertical-align: top;
+    display: inline-block;
+}
+
+.vote{
+    display: inline-block;
+    vertical-align: top;
+}
+
+#mafialist{
+    display: inline-block;
+    vertical-align: top;
+}
