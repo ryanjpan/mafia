@@ -2,7 +2,6 @@ module.exports = function(io, socket, rooms){
     function isIn(userArr, name){
          for(var i=0; i < userArr.length; i++){
              if(userArr[i].name === name){
-                return true;
                 return {valid:true, index:i}
             }
         }
@@ -52,11 +51,13 @@ module.exports = function(io, socket, rooms){
         }
         else{
           console.log("in else statement");
+          // console.log(io.sockets.connected[rooms[data.room]['users'][i]['socketID']]);
+
           if(rooms[data.room]){ // room exists and game started
             for(var i = 0; i<rooms[data.room]['users'].length;i++){
               if(rooms[data.room]['users'][i]['name']===data.user){ // if user is in room already
                 console.log(io.sockets.connected[rooms[data.room]['users'][i]['socketID']]);
-                if(!io.sockets.connected[rooms[data.room]['users'][i]['socketID']]){ //if user is connected
+                if(io.sockets.connected[rooms[data.room]['users'][i]['socketID']]){ //if user is connected
                   rooms[data.room]['users'][i]['socketID'] = socket.id //update user id
                   socket.emit('user_response', {valid: true})
 
@@ -75,6 +76,7 @@ module.exports = function(io, socket, rooms){
           if(!io.sockets.connected[rooms[data.room]['users'][info.index]['socketID']]){ //if user is connected
             rooms[data.room]['users'][info.index]['socketID'] = socket.id //update user id
             socket.emit('user_response', {valid: true})
+            updateUsers(data.room)
             return;
           }
             socket.emit('user_response', {valid: false});
