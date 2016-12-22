@@ -36,6 +36,7 @@ h1{
 }
 
 #role{
+    text-align: center;
     vertical-align: top;
     display: inline-block;
 }
@@ -46,6 +47,21 @@ h1{
 }
 
 #mafialist{
+    text-align: center;
+    margin-top: 50px;
+    margin-left: 15px;
     display: inline-block;
     vertical-align: top;
+}
+
+#execution{
+    color:red;
+}
+
+#game_over h1{
+    font-size: 72;
+}
+
+#game_over{
+    text-align: center;
 }

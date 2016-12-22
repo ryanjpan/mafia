@@ -86,20 +86,20 @@ module.exports = function(io, socket, rooms){
         var users = rooms[roomId].users
         if(room.aliveList.Mafia >= (Math.ceil(room.numUsersAlive/2))){
             console.log('Mafia Won')
-            var endMSG = 'GAME OVER --- MAFIA has Won!'
+            var winner = 'Mafia'
             for(var i = 0; i < users.length; i++){
                 if(io.sockets.connected[users[i].socketID]){
-                    io.sockets.connected[users[i].socketID].emit('game_over', {end: endMSG});
+                    io.sockets.connected[users[i].socketID].emit('game_over', {end: winner});
                 }
             }
             return true;
         }
         else if(room.aliveList.Mafia == 0){
             console.log('Village Won')
-            var endMSG = 'GAME OVER --- CITIZENS have Won!'
+            var winner = 'Civilian'
             for(var i = 0; i < users.length; i++){
                 if(io.sockets.connected[users[i].socketID]){
-                    io.sockets.connected[users[i].socketID].emit('game_over', {end: endMSG});
+                    io.sockets.connected[users[i].socketID].emit('game_over', {end: winner});
                 }
             }
             return true;
