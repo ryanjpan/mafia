@@ -60,8 +60,9 @@ module.exports = function(io, socket, rooms){
     }
 
     function mafiaDoneVoting(roomId){
-        var voted;
+        var voted, count = 0;
         for(var key in rooms[roomId].mafiavote){
+            count++;
             if(voted === undefined){
                 voted = rooms[roomId].mafiavote[key];
             }
@@ -70,6 +71,9 @@ module.exports = function(io, socket, rooms){
                     return false;
                 }
             }
+        }
+        if(count !== rooms[roomId].aliveList['Mafia']){
+            return false;
         }
         return true;
     }
