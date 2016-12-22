@@ -1,7 +1,6 @@
 app.controller('gameController', ['$scope', '$http', '$location', '$rootScope', '$route',
 function(sc, http, loc, rs, r) {
 
-    sc.showstart = true
     sc.chatbox = "";
     sc.started = false;
     sc.action = {
@@ -141,6 +140,11 @@ function(sc, http, loc, rs, r) {
         sc.$apply();
     })
 
+    rs.socket.on('set_daytime', function(data){
+        changeToDay();
+        sc.$apply();
+    })
+
     sc.StartCheck = function(){
       if(1 < sc.chatcount && sc.chatcount < 5){
         return true;
@@ -150,6 +154,10 @@ function(sc, http, loc, rs, r) {
     };
 
     sc.nightVote= function(vote){
+        if(vote === ""){
+            //at night must vote for someone
+            return;
+        }
         if(sc.role !== 'Mafia'){
             //if not mafia, can only vote once
             sc.votecast = true;
@@ -172,4 +180,6 @@ function(sc, http, loc, rs, r) {
         }
         sc.$apply();
     })
+
+
 }]);
