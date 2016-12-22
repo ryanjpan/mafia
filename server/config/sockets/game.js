@@ -39,11 +39,14 @@ module.exports = function(io, socket, rooms){
     function changeToDay(roomId){
         rooms[roomId].vote = {};
         emitAliveDead(roomId);
+        console.log('change to day, not finished yet');
     }
 
     function changeToNight(roomId){
         var users = rooms[roomId].users;
-
+        rooms[roomId].mafiaexecute = "";
+        rooms[roomId].saved = "";
+        rooms[roomId].investigated = "";
         for(var i=0; i < users.length; i++){
             if(io.sockets.connected[users[i].socketID]){
                 io.sockets.connected[users[i].socketID].emit('set_nighttime', {});
@@ -68,6 +71,32 @@ module.exports = function(io, socket, rooms){
         return true;
     }
 
+    function gameEnd(roomId){
+        var room = rooms[roomId]
+        var users = rooms[roomId].users
+        if(room.aliveList.Mafia > (Math.ceiling(room.numUsersAlive/2))){
+            console.log('Mafia Won')
+            var endMSG = 'GAME OVER --- MAFIA has Won!'
+            for(var i = 0; i < users.length; i++){
+                if(io.sockets.connected[users[i].socketID]){
+                    io.sockets.connected[users[i].socketID].emit('game_over', {end: endMSG});
+                }
+            }
+            return true;
+        }
+        else if(room.aliveList.Mafia == 0){
+            console.log('Village Won')
+            var endMSG = 'GAME OVER --- CITIZENS have Won!'
+            for(var i = 0; i < users.length; i++){
+                if(io.sockets.connected[users[i].socketID]){
+                    io.sockets.connected[users[i].socketID].emit('game_over', {end: endMSG});
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
     socket.on('day_vote', function(data){
         var vote = rooms[data.roomId].vote;
 
@@ -77,7 +106,7 @@ module.exports = function(io, socket, rooms){
         else{
             rooms[data.roomId].numVoted = 1;
         }
-        var users = rooms[data.roomId].users
+        var users = rooms[data.roomId].users;
         if(vote[data['votedfor']]){
             vote[data['votedfor']] += 1
         }
@@ -110,8 +139,8 @@ module.exports = function(io, socket, rooms){
                 }
 
                 //update Alive and Dead List
-                var aliveList = rooms[data.roomId].aliveList
-                var deadList = rooms[data.roomId].deadList
+                var aliveList = rooms[data.roomId].aliveList;
+                var deadList = rooms[data.roomId].deadList;
                 aliveList[users[index].role] -= 1
                 deadList[users[index].role] += 1
 
@@ -126,6 +155,9 @@ module.exports = function(io, socket, rooms){
                     io.sockets.connected[users[index].socketID].emit('set_dead', {});
                 }
                 emitAliveDead(data.roomId);
+                if(gameEnd(data.roomId)){
+                    return;
+                }
                 setTimeout(function(){ changeToNight(data.roomId); }, 5000);
             }
         }
@@ -142,7 +174,7 @@ module.exports = function(io, socket, rooms){
                 }
             }
             room.mafiavote[data.user] = data.votedfor;
-            if(mafiaDoneVoting(roomId)){
+            if(mafiaDoneVoting(data.roomId)){
                 room.mafiaexecute = data.votedfor;
                 //disable mafia voting
                 for(var i = 0; i < users.length; i++){
@@ -152,6 +184,51 @@ module.exports = function(io, socket, rooms){
                 }
             }
         }
+        else if(data.role == 'Angel'){
+            room.saved = data.votedfor;
+        }
+        else if(data.role == 'Cop'){
+            room.investigated = data.votedfor;
+        }
+
+        if(room.mafiaexecute && (room.aliveList['Angel'] === 0 || room.saved) && (room.aliveList['Cop'] === 0 || room.investigated)){
+            //all the night voting is done
+            var users = room.users;
+            if(room.saved === room.mafiaexecute){
+                for(var i=0; i < users.length; i++){
+                    if(io.sockets.connected[users[i].socketID]){
+                        io.sockets.connected[users[i].socketID].emit('night_event', {user: room.saved, status: 'saved'});
+                    }
+                }
+            }
+            else{
+                //someone died
+                var role, index;
+                for(var i=0; i < users.length; i++){
+                    if(users[i].name === room.mafiaexecute){
+                        role = users[i].role;
+                        index = i;
+                    }
+                }
+                for(var i=0; i < users.length; i++){
+                    if(io.sockets.connected[users[i].socketID]){
+                        io.sockets.connected[users[i].socketID].emit('night_event', {user: room.mafiaexecute, status: 'died', role: role});
+                    }
+                }
+
+                var aliveList = rooms[data.roomId].aliveList
+                var deadList = rooms[data.roomId].deadList
+                aliveList[users[index].role] -= 1
+                deadList[users[index].role] += 1
+                emitAliveDead(data.roomId);
+                if(gameEnd(data.roomId)){
+                    return;
+                }
+
+            }
+            setTimeout(function(){changeToDay(data.roomId);}, 5000);
+        } // end check for night voting done
+
     }) // end night vote
 
 }

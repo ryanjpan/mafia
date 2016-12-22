@@ -74,18 +74,19 @@ function(sc, http, loc, rs, r) {
             Cop: 'cop',
             Angel: 'doctor',
         }
-        console.log(data.role)
         sc.image = image[data.role]
-        console.log(sc.image)
         sc.$apply();
     });
+    rs.socket.on('mafia_list', function(data){
+        sc.mafiaList = data.mafiaList
+        sc.mafia = true
+        sc.$apply();
+    })
 
     rs.socket.on('players_sent', function(data){
-        console.log(sc.players);
         sc.players = data.players;
         sc.players.push('');
         sc.allroles = data.aliveList
-        console.log(data.aliveList)
         sc.deadroles = data.deadList
         sc.$apply();
     });
@@ -96,6 +97,11 @@ function(sc, http, loc, rs, r) {
         changeToDay();
         sc.$apply();
     });
+
+    rs.socket.on('game_over', function(data){
+        sc.gameover = data.end
+        sc.gameend = true
+    })
 
     sc.dayVote = function(name){
         if(name === undefined){
@@ -116,8 +122,6 @@ function(sc, http, loc, rs, r) {
         sc.showexecuted = true;
         console.log(data.executed, 'was executed');
         sc.executed = data.user;
-        console.log(data)
-        console.log(data.role)
         sc.executedrole = data.role;
         sc.$apply();
     });
@@ -151,10 +155,21 @@ function(sc, http, loc, rs, r) {
             sc.votecast = true;
         }
         console.log(vote);
+        rs.socket.emit('night_vote', {user: rs.user, votedfor: vote, role: sc.role, roomId: rs.room});
     }
 
     rs.socket.on('mafia_votedone', function(data){
         sc.votecast = true;
+        sc.$apply();
+    })
+
+    rs.socket.on('night_event', function(data){
+        if(data.status === 'saved'){
+            sc.nightevent = data.user + ' was attacked in his home last night but the doctor saved him';
+        }
+        else{
+            sc.nightevent = data.user + ' was found dead in his home last night, (s)he was a ' + data.role;
+        }
         sc.$apply();
     })
 }]);

@@ -1,6 +1,7 @@
 <div>
     <h1 ng-if="daytime">It is now day time!</h1>
     <h1 ng-if="!daytime && started">It is now night time!</h1>
+    <h3 ng-if="nightevent">{{nightevent}}</h3>
     <div id="textbox">
         <h3>Chat Box</h3>
         <textarea name="textbox" ng-model="chatbox" rows="8" cols="80" scroll-glue disabled></textarea>
@@ -68,4 +69,14 @@
 <div id='role'>
     <h2>Your Role</h2>
     <img src="./images/{{image}}.png">
+</div>
+
+<div ng-if='mafia'>
+    <p>-----Mafia-----</p>
+    <p ng-repeat='mafia in mafiaList'>{{mafia}} is a Mafia</p>
+</div>
+
+
+<div id="game_over" ng-if='gameend'>
+    {{gameover}}
 </div>
