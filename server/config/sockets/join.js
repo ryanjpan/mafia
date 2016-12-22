@@ -44,18 +44,21 @@ module.exports = function(io, socket, rooms){
 
     socket.on('join_room', function(data){
       console.log("logging join room data");
-      console.log(data);
-      console.log(rooms[data.room]['users'][0]['socketID']);
+      // console.log(data);
+      // console.log(rooms[data.room]['users'][0]['socketID']);
         if(rooms[data.room] && !rooms[data.room].started){
             socket.emit('room_response', {valid: true});
         }
         else{
-          for(var i = 0; i<rooms[data.room]['users'].length;i++){
-            if(rooms[data.room]['users'][i]['name']===data.user){
-              if(!io.sockets.connected[rooms[data.room]['users'][i]['socketID']]){
-                rooms[data.room]['users'][i]['socketID'] = socket.id
-                socket.emit('user_response', {valid: true})
-                return;
+          if(rooms[data.room]){
+            for(var i = 0; i<rooms[data.room]['users'].length;i++){
+              if(rooms[data.room]['users'][i]['name']===data.user){
+                if(!io.sockets.connected[rooms[data.room]['users'][i]['socketID']]){
+                  rooms[data.room]['users'][i]['socketID'] = socket.id
+                  socket.emit('user_response', {valid: true})
+                  
+                  return;
+                }
               }
             }
           }
