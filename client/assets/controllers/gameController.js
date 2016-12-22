@@ -119,7 +119,6 @@ function(sc, http, loc, rs, r) {
 
     rs.socket.on('executed', function(data){
         sc.showexecuted = true;
-        console.log(data.executed, 'was executed');
         sc.executed = data.user;
         sc.executedrole = data.role;
         sc.$apply();
