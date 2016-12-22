@@ -35,14 +35,17 @@ function(sc, http, loc, rs, r) {
         sc.showexecuted = false;
         sc.votecast = false;
         sc.nooneexecuted = false;
-        sc.investigateStr = "";
     }
 
     function changeToNight(){
         sc.votecast = false;
         sc.daytime = false;
+        sc.nightevent = "";
         if(sc.role == 'Mafia'){
             sc.mafiabox = "";
+        }
+        if(sc.role == 'Cop'){
+            sc.investigateStr = "";
         }
     }
 
