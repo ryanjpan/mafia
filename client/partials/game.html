@@ -1,6 +1,6 @@
 <div id="game_over" ng-if='gameend'>
     <h1>{{gameoverText}}</h1>
-    <img src="./images/{{gameover}}.jpeg" ng-if="role">
+    <img ng-src="{{gameover?('./images/' + gameover + '.jpeg'):null}}" ng-if="role">
 </div>
 
 <div>
@@ -74,7 +74,8 @@
 
 <div id="role" ng-if="role">
     <h2>Your Role</h2>
-    <img src="./images/{{image}}.png" ng-if="role">
+    <!-- <img src="./images/{{image}}.png" ng-if="role"> -->
+    <img ng-src="{{image?('./images/' + image + '.png'):null}}" ng-if="role">
 </div>
 
 <div id="mafialist" ng-if='mafia'>
