@@ -211,7 +211,28 @@ module.exports = function(io, socket, rooms){
             room.saved = data.votedfor;
         }
         else if(data.role == 'Cop'){
+            var users = room.users;
             room.investigated = data.votedfor;
+            var cind, role;
+            for(var i=0; i < user.length; i++){
+                if(users[i].role === 'Cop'){
+                    cind = i;
+                }
+                else if (users[i].name === room.investigated){
+                    role = users[i].role;
+                }
+            }
+            if(io.sockets.connected[users[cind].socketID]){
+                var result;
+                if(role === 'Mafia'){
+                    result = ', (s)he is a Mafia';
+                }
+                else{
+                    result = ', (s)he is not a Mafia';
+                }
+                io.sockets.connected[users[cind].socketID].emit('investigated', {user: room.investigated, result: result});
+            }
+
         }
 
         if(room.mafiaexecute && (room.aliveList['Angel'] === 0 || room.saved) && (room.aliveList['Cop'] === 0 || room.investigated)){
