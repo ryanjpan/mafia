@@ -119,7 +119,6 @@ function(sc, http, loc, rs, r) {
 
     rs.socket.on('executed', function(data){
         sc.showexecuted = true;
-        console.log(data.executed, 'was executed');
         sc.executed = data.user;
         sc.executedrole = data.role;
         sc.$apply();
@@ -179,6 +178,12 @@ function(sc, http, loc, rs, r) {
             sc.nightevent = data.user + ' was found dead in his home last night, (s)he was a ' + data.role;
         }
         sc.$apply();
+    })
+
+    rs.socket.on('mafia_votecast', function(data){
+        if(sc.role === 'Mafia'){
+            sc.mafiabox += data.user + ' voted for ' + data.votedfor;
+        }
     })
 
 
