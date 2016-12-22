@@ -13,6 +13,10 @@ module.exports = function(io, socket, rooms){
     }
 
     socket.on('chat_send', function(data){
+        if(!rooms[data.roomId]){
+            socket.emit('boot', {});
+            return;
+        }
         var users = rooms[data.roomId].users;
         var flag = false;
         for (var i=0; i < users.length; i++){
