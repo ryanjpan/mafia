@@ -38,6 +38,7 @@ module.exports = function(io, socket, rooms){
 
     function changeToDay(roomId){
         rooms[roomId].vote = {};
+        var users = rooms[roomId].users;
         for(var i=0; i < users.length; i++){
             if(io.sockets.connected[users[i].socketID]){
                 io.sockets.connected[users[i].socketID].emit('set_daytime', {});
@@ -60,8 +61,9 @@ module.exports = function(io, socket, rooms){
     }
 
     function mafiaDoneVoting(roomId){
-        var voted;
+        var voted, count = 0;
         for(var key in rooms[roomId].mafiavote){
+            count++;
             if(voted === undefined){
                 voted = rooms[roomId].mafiavote[key];
             }
@@ -70,6 +72,9 @@ module.exports = function(io, socket, rooms){
                     return false;
                 }
             }
+        }
+        if(count !== rooms[roomId].aliveList['Mafia']){
+            return false;
         }
         return true;
     }
