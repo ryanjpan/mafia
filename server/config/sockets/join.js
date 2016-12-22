@@ -47,6 +47,12 @@ module.exports = function(io, socket, rooms){
         if(rooms[data.room] && !rooms[data.room].started){
             socket.emit('room_response', {valid: true});
         }
+/*
+
+        elseif(){
+
+        }
+*/
         else{
             socket.emit('room_response', {valid: false});
         }
