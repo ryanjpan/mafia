@@ -17,10 +17,10 @@ module.exports = function(io, socket, rooms){
     }
 
     function tally(vote){
-        var executed = "";
+        var executed;
         var tie = false;
         for(var i in vote){
-            if(executed === "" || vote[i] > vote[executed]){
+            if(executed === undefined || vote[i] > vote[executed]){
                 executed = i;
                 tie = false;
             }

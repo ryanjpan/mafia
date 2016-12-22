@@ -32,7 +32,7 @@
     </div>
 </div>
 
-<div ng-if="daytime">
+<div class="vote" ng-if="daytime">
     <h2 id="execution" ng-if="showexecuted">{{executed}} has been executed, (s)he was a {{executedrole}}</h2>
     <h2 ng-if="nooneexecuted">No one was executed</h2>
     <form ng-submit="dayVote(voteOption)">
@@ -44,7 +44,7 @@
     <textarea id="votebox" name="textbox" ng-model="votebox" rows="8" scroll-glue disabled></textarea>
 </div>
 
-<div ng-if="!daytime && role == 'Mafia'">
+<div class="vote" ng-if="!daytime && role == 'Mafia'">
   <form ng-submit="nightVote(voteOption)">
       <select ng-model="voteOption" ng-options="player for player in players">
         <option value="">--{{action[role]}} a person--</option>
@@ -54,7 +54,7 @@
   <textarea id="mafiabox" name="textbox" ng-model="mafiabox" rows="8" scroll-glue disabled></textarea>
 </div>
 
-<div ng-if="!daytime && (role == 'Cop' || role == 'Angel' )">
+<div class="vote" ng-if="!daytime && (role == 'Cop' || role == 'Angel' )">
   <form ng-submit="nightVote(voteOption)">
       <select ng-model="voteOption" ng-options="player for player in players">
         <option value="">--{{action[role]}} a person--</option>
@@ -67,12 +67,12 @@
     <button ng-click='start()' ng-disabled="StartCheck()">Start Game</button>
 </div>
 
-<div id='role'>
+<div id="role" ng-if="role">
     <h2>Your Role</h2>
-    <img src="./images/{{image}}.png">
+    <img src="./images/{{image}}.png" ng-if="role">
 </div>
 
-<div ng-if='mafia'>
+<div id="mafialist" ng-if='mafia'>
     <p>-----Mafia-----</p>
     <p ng-repeat='mafia in mafiaList'>{{mafia}} is a Mafia</p>
 </div>

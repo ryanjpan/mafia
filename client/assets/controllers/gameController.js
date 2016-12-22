@@ -35,14 +35,17 @@ function(sc, http, loc, rs, r) {
         sc.showexecuted = false;
         sc.votecast = false;
         sc.nooneexecuted = false;
-        sc.investigateStr = "";
     }
 
     function changeToNight(){
         sc.votecast = false;
         sc.daytime = false;
+        sc.nightevent = "";
         if(sc.role == 'Mafia'){
             sc.mafiabox = "";
+        }
+        if(sc.role == 'Cop'){
+            sc.investigateStr = "";
         }
     }
 
@@ -192,10 +195,12 @@ function(sc, http, loc, rs, r) {
         if(sc.role === 'Mafia'){
             sc.mafiabox += data.user + ' voted for ' + data.vote + '\n';
         }
+        sc.$apply();
     })
 
     rs.socket.on('investigated', function(data){
         sc.investigateStr = "You investigated " + data.user + data.result;
+        sc.$apply();
     })
 
 }]);
