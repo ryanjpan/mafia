@@ -191,10 +191,12 @@ function(sc, http, loc, rs, r) {
         if(sc.role === 'Mafia'){
             sc.mafiabox += data.user + ' voted for ' + data.vote + '\n';
         }
+        sc.$apply();
     })
 
     rs.socket.on('investigated', function(data){
         sc.investigateStr = "You investigated " + data.user + data.result;
+        sc.$apply();
     })
 
 }]);

@@ -209,7 +209,7 @@ module.exports = function(io, socket, rooms){
             var users = room.users;
             room.investigated = data.votedfor;
             var cind, role;
-            for(var i=0; i < user.length; i++){
+            for(var i=0; i < users.length; i++){
                 if(users[i].role === 'Cop'){
                     cind = i;
                 }
