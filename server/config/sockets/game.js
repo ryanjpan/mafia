@@ -74,7 +74,7 @@ module.exports = function(io, socket, rooms){
     function gameEnd(roomId){
         var room = rooms[roomId]
         var users = rooms[roomId].users
-        if(room.aliveList.Mafia > (Math.ceiling(room.numUsersAlive/2))){
+        if(room.aliveList.Mafia > (Math.ceil(room.numUsersAlive/2))){
             console.log('Mafia Won')
             var endMSG = 'GAME OVER --- MAFIA has Won!'
             for(var i = 0; i < users.length; i++){
