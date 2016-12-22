@@ -35,6 +35,7 @@ function(sc, http, loc, rs, r) {
         sc.showexecuted = false;
         sc.votecast = false;
         sc.nooneexecuted = false;
+        sc.investigateStr = "";
     }
 
     function changeToNight(){
@@ -192,5 +193,8 @@ function(sc, http, loc, rs, r) {
         }
     })
 
+    rs.socket.on('investigated', function(data){
+        sc.investigateStr = "You investigated " + data.user + data.result;
+    })
 
 }]);
