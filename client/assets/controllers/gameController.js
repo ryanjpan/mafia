@@ -180,5 +180,11 @@ function(sc, http, loc, rs, r) {
         sc.$apply();
     })
 
+    rs.socket.on('mafia_votecast', function(data){
+        if(sc.role === 'Mafia'){
+            sc.mafiabox += data.user + ' voted for ' + data.votedfor;
+        }
+    })
+
 
 }]);

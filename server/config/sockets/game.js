@@ -44,6 +44,7 @@ module.exports = function(io, socket, rooms){
                 io.sockets.connected[users[i].socketID].emit('set_daytime', {});
             }
         }
+        rooms[roomId].vote = {}
     }
 
     function changeToNight(roomId){
