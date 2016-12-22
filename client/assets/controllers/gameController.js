@@ -108,8 +108,19 @@ function(sc, http, loc, rs, r) {
     });
 
     rs.socket.on('game_over', function(data){
-        sc.gameover = data.end
         sc.gameend = true
+        var winImage = {
+            Civilian: 'citizen_win',
+            Mafia: 'mafia_win1',
+        }
+        if(data.end == 'Mafia'){
+            sc.gameover = winImage[data.end]
+            sc.gameoverText = 'Mafia has won!'
+        }
+        else{
+            sc.gameover = winImage[data.end]
+            sc.gameoverText = 'Civilians have won!'
+        }
         sc.$apply();
     })
 
@@ -156,7 +167,7 @@ function(sc, http, loc, rs, r) {
     })
 
     sc.StartCheck = function(){
-      if(1 < sc.chatcount && sc.chatcount < 5){
+      if((sc.chatcount < 5) || sc.chatcount > 12){
         return true;
       } else {
         return false;

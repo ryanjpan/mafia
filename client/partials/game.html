@@ -1,3 +1,8 @@
+<div id="game_over" ng-if='gameend'>
+    <h1>{{gameoverText}}</h1>
+    <img ng-src="{{gameover?('./images/' + gameover + '.jpeg'):null}}" ng-if="role">
+</div>
+
 <div>
     <h1 ng-if="daytime">It is now day time!</h1>
     <h1 ng-if="!daytime && started">It is now night time!</h1>
@@ -69,15 +74,11 @@
 
 <div id="role" ng-if="role">
     <h2>Your Role</h2>
-    <img src="./images/{{image}}.png" ng-if="role">
+    <!-- <img src="./images/{{image}}.png" ng-if="role"> -->
+    <img ng-src="{{image?('./images/' + image + '.png'):null}}" ng-if="role">
 </div>
 
 <div id="mafialist" ng-if='mafia'>
     <p>-----Mafia-----</p>
     <p ng-repeat='mafia in mafiaList'>{{mafia}} is a Mafia</p>
-</div>
-
-
-<div id="game_over" ng-if='gameend'>
-    {{gameover}}
 </div>
