@@ -73,7 +73,7 @@ module.exports = function(io, socket, rooms){
     socket.on('set_user', function(data){
         var info = isIn(rooms[data.room].users, data.user)
         if(info.valid){
-          if(!io.sockets.connected[rooms[data.room]['users'][info.index]['socketID']]){ //if user is connected
+          if(!io.sockets.connected[rooms[data.room]['users'][info.index]['socketID']]){ //if user is  not connected
             rooms[data.room]['users'][info.index]['socketID'] = socket.id //update user id
             socket.emit('user_response', {valid: true})
             updateUsers(data.room)
