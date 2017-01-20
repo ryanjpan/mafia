@@ -97,7 +97,9 @@ module.exports = function(io, socket, rooms){
         for(var i = 0; i < rooms[room]['users'].length;i++){
           if(rooms[room]['users'][i]['socketID']==socket.id){
             rooms[room]['users'].splice(i,1);
-            console.log(`deleted disconnected user from ${rooms[room]['users']}`);
+            if(rooms[room]['users'].length == 0){
+              delete rooms[room];
+            }
             return;
           }
         }
