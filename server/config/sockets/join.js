@@ -60,7 +60,6 @@ module.exports = function(io, socket, rooms){
                 if(io.sockets.connected[rooms[data.room]['users'][i]['socketID']]){ //if user is connected
                   rooms[data.room]['users'][i]['socketID'] = socket.id //update user id
                   socket.emit('user_response', {valid: true})
-
                   return;
                 }
               }
@@ -71,12 +70,15 @@ module.exports = function(io, socket, rooms){
     });
 
     socket.on('set_user', function(data){
+        console.log('at set user');
+        console.log(rooms[data.room]);
         var info = isIn(rooms[data.room].users, data.user)
         if(info.valid){
           if(!io.sockets.connected[rooms[data.room]['users'][info.index]['socketID']]){ //if user is  not connected
             rooms[data.room]['users'][info.index]['socketID'] = socket.id //update user id
             socket.emit('user_response', {valid: true})
             updateUsers(data.room)
+            console.log(rooms[data.room]);
             return;
           }
             socket.emit('user_response', {valid: false});
@@ -84,6 +86,21 @@ module.exports = function(io, socket, rooms){
         else{
             rooms[data.room].users.push({name: data.user, socketID: socket.id});
             socket.emit('user_response', {valid: true});
+            console.log(rooms[data.room]);
+
         }
+    });
+
+    socket.on('disconnect', function(){
+      console.log(`socket disconnected ${socket.id}`);
+      for(var room in rooms){
+        for(var i = 0; i < rooms[room]['users'].length;i++){
+          if(rooms[room]['users'][i]['socketID']==socket.id){
+            rooms[room]['users'].splice(i,1);
+            console.log(`deleted disconnected user from ${rooms[room]['users']}`);
+            return;
+          }
+        }
+      }
     });
 }
